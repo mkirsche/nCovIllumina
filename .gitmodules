@@ -1,0 +1,3 @@
+[submodule "VariantValidator"]
+	path = VariantValidator
+	url = https://github.com/mkirsche/VariantValidator.git
