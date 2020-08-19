@@ -1,6 +1,6 @@
 # nCovIllumina
 
-This repository contains a pipeline for processing Illumina nCov data, using (https://github.com/connor-lab/ncov2019-artic-nf)[an existing ArticNextflow pipeline], and performing validation against variant calls from FreeBayes and against allele frequency thresholds.
+This repository contains a pipeline for processing Illumina nCov data, using [an existing ArticNextflow pipeline](https://github.com/connor-lab/ncov2019-artic-nf), and performing validation against variant calls from FreeBayes and against allele frequency thresholds.
 
 ## Dependencies
 
