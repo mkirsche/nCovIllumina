@@ -6,7 +6,7 @@ else
     BINDIR=$(dirname "$(readlink "$0" || echo "$(echo "$0" | sed -e 's,\\,/,g')")")
 fi
 
-REFERENCE=$BINDIR/VariantValidator/nCoV-2019.reference.fasta
+REFERENCE=$BINDIR/reference/nCoV-2019.reference.fasta
 
 if [ ! -r $REFERENCE ]
 then
