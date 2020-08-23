@@ -1,0 +1,16 @@
+﻿case,description,status
+1,near depth threshold,Alarm
+2,allele in negative control,Alarm
+3,variant callers disagree,Alarm
+4,low frequency variant in consensus,Alarm
+5,high frequency variant not in consensus,Alarm
+6,variant ignored due to strand bias,Pass
+7,mixed fequency due to known homopolymer,Pass
+8,misc mixed variant,Check
+9,new position at high frequency,Pass
+10,new position at intermediate frequency,Check
+11,ignore low frequency variant,Pass
+12,accept high frequency variant,Pass
+13,ambiguous base in consensus,Check
+14,ambiguous base at key position,Pass
+15,ambiguous base due to variant calling issue,Check
