@@ -108,14 +108,18 @@ for bam in $DIR/ncovIllumina_sequenceAnalysis_trimPrimerSequences/*.primertrimme
 	sample=${bam##*/}
 	samplename=${sample%%.*}
 
-	if [ -f $DIR/postfilt/$samplename.complete.fasta ]; then
-		cp $DIR/postfilt/$samplename.complete.fasta $DIR/final/complete_genomes/$samplename.fasta
+	if [ ! "$samplename" = "$NTC" ]; then
 
-	elif [ -f $DIR/postfilt/$samplename.partial.fasta ]; then
-		cp $DIR/postfilt/$samplename.partial.fasta $DIR/final/partial_genomes/$samplename.fasta
-	
-	else
-		echo $samplename >> failed_samples.txt
+		if [ -f $DIR/postfilt/$samplename.complete.fasta ]; then
+			cp $DIR/postfilt/$samplename.complete.fasta $DIR/final/complete_genomes/$samplename.fasta
+
+		elif [ -f $DIR/postfilt/$samplename.partial.fasta ]; then
+			cp $DIR/postfilt/$samplename.partial.fasta $DIR/final/partial_genomes/$samplename.fasta
+		
+		else
+			echo $samplename >> $DIR/final/failed_samples.txt
+
+		fi
 
 	fi
 
