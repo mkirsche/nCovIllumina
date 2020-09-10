@@ -1,3 +1,6 @@
 [submodule "VariantValidator"]
 	path = VariantValidator
 	url = https://github.com/mkirsche/VariantValidator.git
+[submodule "artic-ncov2019"]
+	path = artic-ncov2019
+	url = git@github.com:artic-network/artic-ncov2019.git

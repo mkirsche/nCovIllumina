@@ -1,0 +1,11 @@
+# Postfiltering config
+NTCPREFIX=NTC
+
+# Nextflow config
+# Lines starting with "#" will be ignored and fallback to the NextFlow pipeline's defaults.
+# They are included here to show examples of the existing configurable values
+SCHEME_REPO_PATH=$BINDIR/artic-ncov2019
+IVAR_MIN_FREQ_THRESHOLD=.15
+#IVAR_CONSENSUS_FREQ_THRESHOLD=.75
+#IVAR_MIN_DEPTH=10
+

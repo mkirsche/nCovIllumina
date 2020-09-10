@@ -1,5 +1,6 @@
 nextflow
 results/
 .nextflow/
-.nextflow.log
+.nextflow.log*
+*.class
 work/

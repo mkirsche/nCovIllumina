@@ -20,9 +20,12 @@ javac $BINDIR/VariantValidator/src/*.java
 
 if [ ! -d $WORKINGDIR/results ]
 then
+  echo 'Getting ivar config'
+  javac $BINDIR/ParseIvarConfig.java
+  extraargs=`java -cp $BINDIR ParseIvarConfig $BINDIR/config/illumina.txt`
   echo 'Running ivar'
   DATADIR=$1
-  $BINDIR/ivar.sh $DATADIR
+  $BINDIR/ivar.sh $DATADIR $extraargs
 fi
 
 
