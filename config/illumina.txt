@@ -1,5 +1,6 @@
 # Postfiltering config
-NTCPREFIX=NTC
+# If an NTC wasn't run, NTCPREFIX should be set to ""
+NTCPREFIX=plate1_A12_S59_L001
 
 # Nextflow config
 # Lines starting with "#" will be ignored and fallback to the NextFlow pipeline's defaults.

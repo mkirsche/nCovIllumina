@@ -116,3 +116,6 @@ do
 
 done
 
+source $BINDIR/config/illumina.txt
+
+$BINDIR/src/run_postfilter.sh $WORKINGDIR $BINDIR $NTCPREFIX
