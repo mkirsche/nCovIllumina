@@ -1,7 +1,8 @@
 # Postfiltering config
 # If an NTC wasn't run, NTCPREFIX should be set to ""
 NTCPREFIX=plate1_A12_S59_L001
-
+MIN_READ_LENGTH=50
+MAX_READ_LENGTH=700
 # Nextflow config
 # Lines starting with "#" will be ignored and fallback to the NextFlow pipeline's defaults.
 # They are included here to show examples of the existing configurable values

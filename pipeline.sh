@@ -6,6 +6,8 @@ else
     BINDIR=$(dirname "$(readlink "$0" || echo "$(echo "$0" | sed -e 's,\\,/,g')")")
 fi
 
+source $BINDIR/config/illumina.txt
+
 REFERENCE=$BINDIR/reference/nCoV-2019.reference.fasta
 
 if [ ! -r $REFERENCE ]
@@ -18,14 +20,37 @@ fi
 
 javac $BINDIR/VariantValidator/src/*.java
 
+# Filter reads by length
+DATADIR=$1
+FILTEREDDATADIR=$WORKINGDIR'/filteredreads'
+if [ ! -r $FILTEREDDATADIR ]
+then
+    mkdir $FILTEREDDATADIR
+    for i in `ls $DATADIR/*.fastq.gz`
+    do
+        echo 'Copying and unzipping ' $i
+        filename=`basename $i`
+        cp $i $FILTEREDDATADIR
+        gunzip $FILTEREDDATADIR/$filename
+    done
+    javac $BINDIR/FilterReads.java
+    allfiles=`ls $FILTEREDDATADIR/*.fastq`
+    echo 'Filtering reads by length'
+    java -cp $BINDIR FilterReads $MIN_READ_LENGTH $MAX_READ_LENGTH $allfiles
+    for i in $allfiles
+    do
+      echo 'Zipping filtered reads: '$i
+      gzip $i
+    done
+fi
+
 if [ ! -d $WORKINGDIR/results ]
 then
   echo 'Getting ivar config'
   javac $BINDIR/ParseIvarConfig.java
   extraargs=`java -cp $BINDIR ParseIvarConfig $BINDIR/config/illumina.txt`
   echo 'Running ivar'
-  DATADIR=$1
-  $BINDIR/ivar.sh $DATADIR $extraargs
+  $BINDIR/ivar.sh $FILTEREDDATADIR $extraargs
 fi
 
 
@@ -115,7 +140,5 @@ do
   java -cp $BINDIR/VariantValidator/src AddAlleleFrequencies vcf_file=$mergedvcf illumina_mpileup=$mpileupfile out_file=$allelefreqvcf
 
 done
-
-source $BINDIR/config/illumina.txt
 
 $BINDIR/src/run_postfilter.sh $WORKINGDIR $BINDIR $NTCPREFIX
