@@ -41,3 +41,31 @@ In addition, the next steps of the pipeline augment this results folder with the
 * merging contains a merged VCF containing VCFs from all three callers which has allele frequencies annotated (prefix.all_caller_freqs.vcf)
 
 This enable the flagging of iVar variants which have lower than expected allele frequencies or which don't have support from other variant callers.
+
+## Docker container
+
+A Dockerized version of this pipeline can be run using the following commands.
+
+First build the Docker image with:
+```
+docker image build . -t ncovillumina
+```
+
+Because nextflow requires connection to Docker, we enable sibling containers by binding the docker socket to our container.
+
+This container also attached an Illumina run folder to the `/data` folder within the container:
+```
+docker run --rm -it -v /var/run/docker.sock:/var/run/docker.sock --mount type=bind,source=/home/idies/workspace/covid19/illumina/200421_run1,target=/data ncovillumina bash
+```
+
+Once in the container, run the pipeline on the mounted folder with:
+```
+/home/idies/workspace/covid19/code/nCovIllumina/pipeline.sh /data
+```
+
+This will output a `results` folder in the active directory, which can be inspected in the container.
+
+Once it is confirmed good to go, it can be copied over to the mounted data partition and accessed outside of the container:
+```
+mv results /data
+```
