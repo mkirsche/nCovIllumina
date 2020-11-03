@@ -54,7 +54,7 @@ dependencies:
   - python=3.8.5=h4d41432_2_cpython
   - python_abi=3.8=1_cp38
   - readline=8.0=he28a2e2_2
-  - samtools=1.7=1
+  - samtools=1.10
   - setuptools=49.6.0=py38h32f6830_0
   - sqlite=3.32.3=h4cf870e_1
   - tk=8.6.10=hed695b0_0
@@ -94,5 +94,3 @@ dependencies:
     - six==1.15.0
     - sortedcontainers==2.2.2
     - variants==0.2.0
-prefix: /home/mkirsche/anaconda3/envs/ncov_illumina
-
