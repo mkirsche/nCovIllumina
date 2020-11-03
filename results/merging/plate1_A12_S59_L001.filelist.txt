@@ -1,3 +1,0 @@
-/home/mkirsche/git/nCovIllumina/results/ncovIllumina_sequenceAnalysis_callVariants/plate1_A12_S59_L001.variants.vcf
-/home/mkirsche/git/nCovIllumina/results/freebayes/plate1_A12_S59_L001.vcf
-/home/mkirsche/git/nCovIllumina/results/samtools/plate1_A12_S59_L001.samtools.vcf
