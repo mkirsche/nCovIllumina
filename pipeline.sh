@@ -53,6 +53,8 @@ then
   $BINDIR/ivar.sh $FILTEREDDATADIR $extraargs
 fi
 
+source /home/idies/workspace/covid19/code/nCovIllumina/bashrc
+conda activate ncov_illumina
 
 # Set up output directories for freebayes, samtools, and merging
 
