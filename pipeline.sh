@@ -9,6 +9,7 @@ fi
 source $BINDIR/config/illumina.txt
 
 REFERENCE=$BINDIR/reference/nCoV-2019.reference.fasta
+GENES=$BINDIR/reference/genes.gff3
 
 if [ ! -r $REFERENCE ]
 then
@@ -136,6 +137,10 @@ do
   mergedvcf=$MERGINGDIR/$prefix.allcallers.vcf
   echo 'Merging VCFs: '$mergedvcf
   java -cp $BINDIR/VariantValidator/src MergeVariants file_list=$filelist out_file=$mergedvcf illumina_bam=$bamfile
+  
+  combinedvcf=$MERGINGDIR/$prefix.allcallers_combined.vcf
+  echo 'Merging VCFs: '$mergedvcf
+  java -cp $BINDIR/VariantValidator/src CombineVariants vcf_file=$mergedvcf out_file=$combinedvcf genome_file=$REFERENCE gene_file=$GENES
 
   allelefreqvcf=$MERGINGDIR/$prefix.all_caller_freqs.vcf
   echo 'Adding allele frequencies: '$allelefreqvcf
