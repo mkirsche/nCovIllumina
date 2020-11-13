@@ -6,7 +6,11 @@ MAX_READ_LENGTH=700
 # Nextflow config
 # Lines starting with "#" will be ignored and fallback to the NextFlow pipeline's defaults.
 # They are included here to show examples of the existing configurable values
-SCHEME_REPO_PATH=$BINDIR/primer-schemes
+SCHEME_REPO_PATH=/home/mkirsche/git/tmp/nCovIllumina/primer-schemes
+REFERENCE=/home/mkirsche/git/tmp/nCovIllumina/reference/nCoV-2019.reference.fasta
+GENES=/home/mkirsche/git/tmp/nCovIllumina/reference/genes.gff3
+OUTPUTDIR=/home/mkirsche/git/tmp/nCovIllumina
+INPUTDIR=/home/mkirsche/nextera/200807_ncov_nextflex/raw
 IVAR_MIN_FREQ_THRESHOLD=.15
 #IVAR_CONSENSUS_FREQ_THRESHOLD=.75
 #IVAR_MIN_DEPTH=10
