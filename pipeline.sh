@@ -6,6 +6,13 @@ else
 fi
 
 source $BINDIR/config/illumina.txt
+
+if [ "$#" -eq 2 ]
+then
+    INPUTDIR=$1
+    OUTPUTDIR=$2
+fi
+
 cd $OUPUTDIR
 
 if [ ! -r $BINDIR/VariantValidator/README.md ]
