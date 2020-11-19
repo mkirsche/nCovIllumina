@@ -2,14 +2,14 @@
 
 ## SET UP FILENAMES
 
-# get the working directory
-RUN=$1
+# get the output directory
+OUTPUTDIR=$1
+DIR=$OUTPUTDIR/results
 
 # get the code directory
 BINDIR=$2
 
 # get known directory and file names
-DIR="$RUN/results"
 global_vars="$BINDIR/reference/nextstrain_ncov_global_diversity.tsv" # observed global variants
 key_vars="$BINDIR/reference/key_positions.txt" # clade-definiting positions
 case_defs="$BINDIR/reference/variant_case_definitions.csv" # types of variant annotations
@@ -93,38 +93,5 @@ for consfile in $DIR/ncovIllumina_sequenceAnalysis_makeConsensus/*.consensus.fa;
 
 done
 
-
-## SUMMARIZE RESULTS AND ORGANIZE FINAL FOLDER
-
-if [ ! -d $DIR/final ]; then
-        mkdir $DIR/final
-        mkdir $DIR/final/complete_genomes $DIR/final/partial_genomes
-        touch $DIR/final/failed_samples.txt
-        echo $NTC > $DIR/final/negative_control.txt
-fi
-
-for bam in $DIR/ncovIllumina_sequenceAnalysis_trimPrimerSequences/*.primertrimmed.sorted.bam; do
-	
-	sample=${bam##*/}
-	samplename=${sample%%.*}
-
-	if [ ! "$samplename" = "$NTC" ]; then
-
-		if [ -f $DIR/postfilt/$samplename.complete.fasta ]; then
-			cp $DIR/postfilt/$samplename.complete.fasta $DIR/final/complete_genomes/$samplename.fasta
-
-		elif [ -f $DIR/postfilt/$samplename.partial.fasta ]; then
-			cp $DIR/postfilt/$samplename.partial.fasta $DIR/final/partial_genomes/$samplename.fasta
-		
-		else
-			echo $samplename >> $DIR/final/failed_samples.txt
-
-		fi
-
-	fi
-
-done
-
+# run postfilter summary
 python $BINDIR/src/summarize_postfilter.py --rundir $DIR/postfilt
-mv $DIR/postfilt/postfilt_all.txt $DIR/final/all_variants_annotated.txt
-mv $DIR/postfilt/postfilt_summary.txt $DIR/final/run_summary.txt
