@@ -1,12 +1,33 @@
-# Pipeline for processing Illumina reads
+### Pipeline for processing Illumina reads ###
+
+## Set up parameters
+
+# Get run directory
 if [ "$(uname -s)" = 'Linux' ]; then
     BINDIR=$(dirname "$(readlink -f "$0" || echo "$(echo "$0" | sed -e 's,\\,/,g')")")
 else
     BINDIR=$(dirname "$(readlink "$0" || echo "$(echo "$0" | sed -e 's,\\,/,g')")")
 fi
 
+# Load parameters from config
 source $BINDIR/config/illumina.txt
 
+# Set up script parameters based on config setup
+REFERENCE=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/*.reference.fasta
+GENES=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/genes.gff3
+
+# postfiltering parameters
+GLOBALDIVERSITY=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/approx_global_diversity.tsv # observed global variants
+KEYPOS=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/key_positions.txt # clade-definiting positions
+CASEDEFS=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/variant_case_definitions.csv # types of variant annotations
+AMPLICONS=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/amplicons.tsv # amplicons file
+
+REF_GB=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/reference_seq.gb
+PANGOLIN_DATA=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/pangoLEARN/data
+NEXTSTRAIN_CLADES=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/clades.tsv
+SNPEFF_CONFIG=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/snpEff.config
+
+# Get input and output directories
 if [ "$#" -eq 2 ]
 then
     INPUTDIR=$1
@@ -15,6 +36,8 @@ fi
 
 cd $OUTPUTDIR
 
+
+## Load submodule
 if [ ! -r $BINDIR/VariantValidator/README.md ]
 then
   echo 'Downloading VariantValidator submodule'
@@ -25,10 +48,15 @@ fi
 
 javac $BINDIR/VariantValidator/src/*.java
 
-# Filter reads by length
+#------------------------------------------------------------------------------
+
+## Filter reads by length
 FILTEREDINPUTDIR=$OUTPUTDIR'/filteredreads'
 $BINDIR/src/filterreads.sh $INPUTDIR $FILTEREDINPUTDIR $BINDIR $MIN_READ_LENGTH $MAX_READ_LENGTH
 
+#------------------------------------------------------------------------------
+
+# Run iVar pipeline
 if [ ! -d $OUTPUTDIR/results ]
 then
   echo 'Getting ivar config'
@@ -38,53 +66,32 @@ then
   $BINDIR/src/ivar.sh $FILTEREDINPUTDIR $extraargs
 fi
 
+#------------------------------------------------------------------------------
+
+## Call variants 
+
+# Load necessary conda environment
 source /home/idies/workspace/covid19/code/nCovIllumina/bashrc
 conda activate ncov_illumina
-
-# Set up sub-directory in which to store final results
-if [ ! -d $OUTPUTDIR/final_results ]; then
-        mkdir $OUTPUTDIR/final_results
-        mkdir $OUTPUTDIR/final_results/complete_genomes $OUTPUTDIR/final_results/partial_genomes
-        touch $OUTPUTDIR/final_results/failed_samples.txt
-        echo $NTCPREFIX > $OUTPUTDIR/final_results/negative_control.txt
-fi
 
 # Call variants
 $BINDIR/src/callvariants.sh $OUTPUTDIR $BINDIR $REFERENCE $GENES
 
-# Run postfiltering
-$BINDIR/src/run_postfilter.sh $OUTPUTDIR $BINDIR $NTCPREFIX
+#------------------------------------------------------------------------------
 
-# Copy postfiltering results into final results folder
-for bam in $OUTPUTDIR/results/ncovIllumina_sequenceAnalysis_trimPrimerSequences/*.primertrimmed.sorted.bam; do
-  
-  sample=${bam##*/}
-  samplename=${sample%%.*}
+## Run postfiltering
+$BINDIR/src/run_postfilter.sh $OUTPUTDIR $BINDIR $NTCPREFIX $REFERENCE $GLOBALDIVERSITY $KEYPOS $CASEDEFS $AMPLICONS
+# run postfilter summary
+python $BINDIR/src/summarize_postfilter.py --rundir $OUTPUTDIR/results/postfilt
 
-  if [ ! "$samplename" = "$NTCPREFIX" ]; then
+#------------------------------------------------------------------------------
 
-    if [ -f $OUTPUTDIR/results/postfilt/$samplename.complete.fasta ]; then
-      cp $OUTPUTDIR/results/postfilt/$samplename.complete.fasta $OUTPUTDIR/final_results/complete_genomes/$samplename.fasta
-
-    elif [ -f $OUTPUTDIR/results/postfilt/$samplename.partial.fasta ]; then
-      cp $OUTPUTDIR/results/postfilt/$samplename.partial.fasta $OUTPUTDIR/final_results/partial_genomes/$samplename.fasta
-    
-    else
-      echo $samplename >> $OUTPUTDIR/final_results/failed_samples.txt
-
-    fi
-
-  fi
-
-done
-
-mv $OUTPUTDIR/results/postfilt/postfilt_all.txt $OUTPUTDIR/final_results/all_variants_annotated.txt
-mv $OUTPUTDIR/results/postfilt/postfilt_summary.txt $OUTPUTDIR/final_results/run_summary.txt
-
-# Run SnpEff
+## Run SnpEff
 $BINDIR/src/run_snpEff.sh $OUTPUTDIR $BINDIR $SNPEFF_CONFIG $DBNAME $NTCPREFIX
 
-# Run pangolin clades
+#------------------------------------------------------------------------------
+
+## Run pangolin clades
 
 if [ -z $THREADS ]; then
    THREADS=1
@@ -93,7 +100,9 @@ conda deactivate
 conda activate pangolin
 $BINDIR/src/run_pangolin.sh $OUTPUTDIR $BINDIR $THREADS $PANGOLIN_DATA $NTCPREFIX
 
-# Run nextstrain clades 
+#------------------------------------------------------------------------------
+
+## Run nextstrain clades 
 conda deactivate
 conda activate nextstrain
 $BINDIR/src/run_nextstrain_clades.sh $OUTPUTDIR $BINDIR $REF_GB $NEXTSTRAIN_CLADES $NTCPREFIX

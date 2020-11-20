@@ -1,23 +1,35 @@
-# Postfiltering config
-# If an NTC wasn't run, NTCPREFIX should be set to ""
-NTCPREFIX=plate1_A12_S59_L001
+#### Configuration file ####
+
+
+## Sequencing method parameters
+
+# select sequencing method and protocol
+# path to directory containing necessary values
+GENOMEDIR=/home/mkirsche/git/tmp/nCovIllumina/config
+
+# a directory with this name must exist within the config directory for this repository
+PATHOGENREF='nCoV-2019'
+PRIMERVERSION='V3'
+
+# set basic amplicon parameters
 MIN_READ_LENGTH=50
 MAX_READ_LENGTH=700
-# Nextflow config
-# Lines starting with "#" will be ignored and fallback to the NextFlow pipeline's defaults.
+
+
+## NextFlow pipeline configuration
+
+# Lines starting with "#" will be ignored and fallback to the NextFlow pipeline defaults
 # They are included here to show examples of the existing configurable values
-SCHEME_REPO_PATH=/home/mkirsche/git/tmp/nCovIllumina/primer-schemes
-REFERENCE=/home/mkirsche/git/tmp/nCovIllumina/reference/nCoV-2019.reference.fasta
-GENES=/home/mkirsche/git/tmp/nCovIllumina/reference/genes.gff3
-OUTPUTDIR=/home/mkirsche/git/tmp/nCovIllumina
-INPUTDIR=/home/mkirsche/nextera/200807_ncov_nextflex/raw
+SCHEME_REPO_PATH=$GENOMEDIR
+SCHEME=$PATHOGENREF
+SCHEME_VERSION=$PRIMERVERSION
 IVAR_MIN_FREQ_THRESHOLD=.15
 #IVAR_CONSENSUS_FREQ_THRESHOLD=.75
 #IVAR_MIN_DEPTH=10
-# SnpEff , pangolin and nextstrain config
-# Filepaths are specific to Sciserver
-REF_GB=/home/idies/workspace/covid19/ncov_reference/reference_seq.gb ## Autogenerate this parameter file
-PANGOLIN_DATA=/home/idies/workspace/covid19/ncov_reference/pangoLEARN/data
-NEXTSTRAIN_CLADES=/home/idies/workspace/covid19/ncov_reference/clades.tsv
-SNPEFF_CONFIG=/home/idies/workspace/covid19/ncov_reference/snpEff.config ## Autogenerate this parameter file
-DBNAME="ncov"
+
+
+## Postfiltering configuration
+
+# set NTC name needed for negative control filtering
+# set to "" if no NTC included on sequencing run
+NTCPREFIX=plate1_A12_S59_L001
