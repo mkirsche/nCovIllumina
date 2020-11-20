@@ -10,9 +10,9 @@ REF_GB=$3
 NEXTSTRAIN_CLADES=$4
 NTCPREFIX=$5
 
-DIR="${OUTPUTDIR}/results"
+DIR="${OUTPUTDIR}/final_results/complete_genomes/"
 
-OUTDIR=$DIR
+OUTDIR=${OUTPUTDIR}/final_results
 
 SCRIPT_DIR="$BINDIR/src"
 
@@ -28,7 +28,7 @@ CONS_FASTA=$OUTDIR/postfilt_consensus_all.fasta
 
 if [ ! -f "${DIR}/$CONS_FASTA" ]; then
     echo " File : ${DIR}/$CONS_FASTA does not exist... Making "
-    ls ${DIR}/*.complete.fasta | grep -v ${NTCPREFIX} | cat - > ${OUTDIR}/${CONS_FASTA}
+    ls ${DIR}/*.fasta | grep -v ${NTCPREFIX} | cat - > ${OUTDIR}/${CONS_FASTA}
 fi
 
 #usage: assign_clades.py [-h] --sequences SEQUENCES --clade CLADE --gbk GBK [--output OUTPUT] [--keep-temporary-files] [--chunk-size CHUNK_SIZE]

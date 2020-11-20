@@ -14,8 +14,8 @@ SNPEFF_CONFIG=$3
 DBNAME=$4
 NTCPREFIX=$5
 
-DIR="${OUTPUTDIR}/results"   
-OUTDIR=$DIR
+DIR="${OUTPUTDIR}/results/merging"   
+OUTDIR=${OUTPUTDIR}/final_results
 
 #SNPEFF_CONFIG="${BINDIR}/reference/snpEff.config"
 #DBNAME="ncov"

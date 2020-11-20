@@ -80,3 +80,20 @@ done
 
 mv $OUTPUTDIR/results/postfilt/postfilt_all.txt $OUTPUTDIR/final_results/all_variants_annotated.txt
 mv $OUTPUTDIR/results/postfilt/postfilt_summary.txt $OUTPUTDIR/final_results/run_summary.txt
+
+# Run SnpEff
+$BINDIR/src/run_snpEff.sh $OUTPUTDIR $BINDIR $SNPEFF_CONFIG $DBNAME $NTCPREFIX
+
+# Run pangolin clades
+
+if [ -z $THREADS ]; then
+   THREADS=1
+fi
+conda deactivate
+conda activate pangolin
+$BINDIR/src/run_pangolin.sh $OUTPUTDIR $BINDIR $THREADS $PANGOLIN_DATA $NTCPREFIX
+
+# Run nextstrain clades 
+conda deactivate
+conda activate nextstrain
+$BINDIR/src/run_nextstrain_clades.sh $OUTPUTDIR $BINDIR $REF_GB $NEXTSTRAIN_CLADES $NTCPREFIX
