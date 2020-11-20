@@ -1,12 +1,17 @@
 #!/bin/bash
 
+#TODO:
+# 1 ) Autogenerate snpEff config to be able to run for genomes other than COVID19
+# 2 ) Autobuild SnpEff db if not present
+
+
 #Run directory
-RUN=$1
+OUTPUTDIR=$1
 
 #Get the code directory
 BINDIR=$2
 
-DIR="${RUN}/results"   
+DIR="${OUTPUTDIR}/results"   
 
 OUTDIR=$DIR
 

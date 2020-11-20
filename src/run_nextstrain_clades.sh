@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #Run directory
-RUN=$1
+OUTPUTDIR=$1
 BINDIR=$2
-NTC=$3
+NTCPREFIX=$3
 
-DIR="${RUN}/results"
+DIR="${OUTPUTDIR}/results"
 
 OUTDIR=$DIR
 
@@ -22,7 +22,7 @@ CONS_FASTA=$OUTDIR/postfilt_consensus_all.fasta
 
 if [ ! -f "${DIR}/$CONS_FASTA" ]; then
     echo " File : ${DIR}/$CONS_FASTA does not exist... Making "
-    ls ${DIR}/*.complete.fasta | grep -v ${NTC} | cat - > ${OUTDIR}/${CONS_FASTA}
+    ls ${DIR}/*.complete.fasta | grep -v ${NTCPREFIX} | cat - > ${OUTDIR}/${CONS_FASTA}
 fi
 
 #usage: assign_clades.py [-h] --sequences SEQUENCES --clade CLADE --gbk GBK [--output OUTPUT] [--keep-temporary-files] [--chunk-size CHUNK_SIZE]
