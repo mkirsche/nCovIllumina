@@ -14,10 +14,10 @@ then
         cp $i $FILTEREDINPUTDIR
         gunzip $FILTEREDINPUTDIR/$filename
     done
-    javac $BINDIR/FilterReads.java
+    javac $BINDIR/src/FilterReads.java
     allfiles=`ls $FILTEREDINPUTDIR/*.fastq`
     echo 'Filtering reads by length'
-    java -cp $BINDIR FilterReads $MIN_READ_LENGTH $MAX_READ_LENGTH $allfiles
+    java -cp $BINDIR/src FilterReads $MIN_READ_LENGTH $MAX_READ_LENGTH $allfiles
     for i in $allfiles
     do
       echo 'Zipping filtered reads: '$i

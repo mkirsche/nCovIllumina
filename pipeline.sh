@@ -27,15 +27,15 @@ javac $BINDIR/VariantValidator/src/*.java
 
 # Filter reads by length
 FILTEREDINPUTDIR=$OUTPUTDIR'/filteredreads'
-$BINDIR/filterreads.sh $INPUTDIR $FILTEREDINPUTDIR $BINDIR $MIN_READ_LENGTH $MAX_READ_LENGTH
+$BINDIR/src/filterreads.sh $INPUTDIR $FILTEREDINPUTDIR $BINDIR $MIN_READ_LENGTH $MAX_READ_LENGTH
 
 if [ ! -d $OUTPUTDIR/results ]
 then
   echo 'Getting ivar config'
-  javac $BINDIR/ParseIvarConfig.java
-  extraargs=`java -cp $BINDIR ParseIvarConfig $BINDIR/config/illumina.txt`
+  javac $BINDIR/src/ParseIvarConfig.java
+  extraargs=`java -cp $BINDIR/src ParseIvarConfig $BINDIR/config/illumina.txt`
   echo 'Running ivar'
-  $BINDIR/ivar.sh $FILTEREDINPUTDIR $extraargs
+  $BINDIR/src/ivar.sh $FILTEREDINPUTDIR $extraargs
 fi
 
 source /home/idies/workspace/covid19/code/nCovIllumina/bashrc
@@ -50,7 +50,7 @@ if [ ! -d $OUTPUTDIR/final_results ]; then
 fi
 
 # Call variants
-$BINDIR/callvariants.sh $OUTPUTDIR $BINDIR $REFERENCE $GENES
+$BINDIR/src/callvariants.sh $OUTPUTDIR $BINDIR $REFERENCE $GENES
 
 # Run postfiltering
 $BINDIR/src/run_postfilter.sh $OUTPUTDIR $BINDIR $NTCPREFIX
