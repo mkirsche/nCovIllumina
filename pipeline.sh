@@ -106,3 +106,8 @@ $BINDIR/src/run_pangolin.sh $OUTPUTDIR $BINDIR $THREADS $PANGOLIN_DATA $NTCPREFI
 conda deactivate
 conda activate nextstrain
 $BINDIR/src/run_nextstrain_clades.sh $OUTPUTDIR $BINDIR $REF_GB $NEXTSTRAIN_CLADES $NTCPREFIX
+
+#------------------------------------------------------------------------------
+
+## Copy final results into final folder
+$BINDIR/src/final_cleanup.sh $OUTPUTDIR $NTCPREFIX
