@@ -13,7 +13,7 @@ then
     OUTPUTDIR=$2
 fi
 
-cd $OUPUTDIR
+cd $OUTPUTDIR
 
 if [ ! -r $BINDIR/VariantValidator/README.md ]
 then
