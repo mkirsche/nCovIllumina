@@ -9,15 +9,15 @@ DIR=$OUTPUTDIR/results
 # get the code directory
 BINDIR=$2
 
-# get known directory and file names
-global_vars="$BINDIR/reference/nextstrain_ncov_global_diversity.tsv" # observed global variants
-key_vars="$BINDIR/reference/key_positions.txt" # clade-definiting positions
-case_defs="$BINDIR/reference/variant_case_definitions.csv" # types of variant annotations
-reference="$BINDIR/reference/nCoV-2019.reference.fasta" # reference genome
-amplicons="$BINDIR/reference/v3_artic_amplicons.tsv" # amplicons file
-
 # get NTC information
 NTC=$3 # this will be empty if there is no NTC
+
+# get other parameters
+REFERENCE=$4
+GLOBALDIVERSITY=$5
+KEYPOS=$6
+CASEDEFS=$7
+AMPLICONS=$8
 
 # if NTC is non-empty
 if [ -n "$NTC" ]; then
@@ -45,7 +45,7 @@ for consfile in $DIR/ncovIllumina_sequenceAnalysis_makeConsensus/*.consensus.fa;
 
 	bamfile="$DIR/ncovIllumina_sequenceAnalysis_trimPrimerSequences/$samplename.mapped.primertrimmed.sorted.bam"
 	outfile="$DIR/samtools/$samplename.mapped.primertrimmed.sorted.del.depth"
-	chromname=$(head -1 $BINDIR/reference/nCoV-2019.reference.fasta | cut -c2-)
+	chromname=$(head -1 $REFERENCE | cut -c2-)
 	
 	# run script
 	if [ ! -f $outfile ]; then
@@ -81,17 +81,14 @@ for consfile in $DIR/ncovIllumina_sequenceAnalysis_makeConsensus/*.consensus.fa;
 		--consensus $consensus \
 		--ntc-bamfile $ntc_bamfile \
 		--ntc-depthfile $ntc_depthfile \
-		--global-vars $global_vars \
-		--key-vars $key_vars \
-		--case-defs $case_defs \
-		--ref-genome $reference \
-		--amplicons $amplicons \
+		--global-vars $GLOBALDIVERSITY \
+		--key-vars $KEYPOS \
+		--case-defs $CASEDEFS \
+		--ref-genome $REFERENCE \
+		--amplicons $AMPLICONS \
 		--outdir $outdir \
 		--prefix $samplename
 
 	fi
 
 done
-
-# run postfilter summary
-python $BINDIR/src/summarize_postfilter.py --rundir $DIR/postfilt
