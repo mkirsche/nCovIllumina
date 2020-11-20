@@ -1,9 +1,12 @@
 #!/bin/bash
 
+# Run it in Pangolin environment
+
 #Run directory
 OUTPUTDIR=$1
 BINDIR=$2
 THREADS=$3
+PANGOLIN_DATA=$4
 NTCPREFIX=$4 # Empty if no NTCPREFIX
 
 DIR=${OUTPUTDIR}/results
@@ -13,7 +16,7 @@ OUTDIR=$DIR
 #SCRIPTS PATH
 SCRIPT_DIR="${BINDIR}/src"
 
-DATA="${BINDIR}/reference/pangoLEARN/data" # Update this
+#PANGOLIN_DATA="${BINDIR}/reference/pangoLEARN/data" # Update this
 TMPDIR=$OUTDIR
 
 #source /home/idies/workspace/covid19/bashrc
@@ -25,6 +28,6 @@ if [ ! -f "${DIR}/$CONS_FASTA" ]; then
    ls ${DIR}/*.complete.fasta | grep -v ${NTCPREFIX} | cat - > ${CONS_FASTA}
 fi
 
-pangolin ${CONS_FASTA} -d ${DATA} -o ${OUTDIR} --outfile pangolin_lineage_report.csv --tempdir $TMPDIR -t ${THREADS}
+pangolin ${CONS_FASTA} -d ${PANGOLIN_DATA} -o ${OUTDIR} --outfile pangolin_lineage_report.csv --tempdir $TMPDIR -t ${THREADS}
 
 echo "DONE"

@@ -1,17 +1,23 @@
 #!/bin/bash
 
+
+# Run it in nextstrain env
+
 #Run directory
 OUTPUTDIR=$1
 BINDIR=$2
-NTCPREFIX=$3
+REF_GB=$3
+NEXTSTRAIN_CLADES=$4
+NTCPREFIX=$5
 
 DIR="${OUTPUTDIR}/results"
 
 OUTDIR=$DIR
 
 SCRIPT_DIR="$BINDIR/src"
-REF_GB="${BINDIR}/reference/reference_seq.gb"
-NEXTSTRAIN_CLADES="${BINDIR}/reference/clades.tsv"
+
+#REF_GB="${BINDIR}/reference/reference_seq.gb"
+#NEXTSTRAIN_CLADES="${BINDIR}/reference/clades.tsv"
 
 #source /home/idies/workspace/covid19/bashrc
 #conda activate nextstrain

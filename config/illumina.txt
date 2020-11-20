@@ -14,4 +14,10 @@ INPUTDIR=/home/mkirsche/nextera/200807_ncov_nextflex/raw
 IVAR_MIN_FREQ_THRESHOLD=.15
 #IVAR_CONSENSUS_FREQ_THRESHOLD=.75
 #IVAR_MIN_DEPTH=10
-
+# SnpEff , pangolin and nextstrain config
+# Filepaths are specific to Sciserver
+REF_GB=/home/idies/workspace/covid19/ncov_reference/reference_seq.gb ## Autogenerate this parameter file
+PANGOLIN_DATA=/home/idies/workspace/covid19/ncov_reference/pangoLEARN/data
+NEXTSTRAIN_CLADES=/home/idies/workspace/covid19/ncov_reference/clades.tsv
+SNPEFF_CONFIG=/home/idies/workspace/covid19/ncov_reference/snpEff.config ## Autogenerate this parameter file
+DBNAME="ncov"
