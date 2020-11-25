@@ -10,25 +10,21 @@ REF_GB=$3
 NEXTSTRAIN_CLADES=$4
 NTCPREFIX=$5
 
-DIR="${OUTPUTDIR}/final_results/complete_genomes/"
+DIR="${OUTPUTDIR}/postfilt/"
 
-OUTDIR=${OUTPUTDIR}/final_results
+OUTDIR=${OUTPUTDIR}/results/nextstrain
 
 SCRIPT_DIR="$BINDIR/src"
 
-#REF_GB="${BINDIR}/reference/reference_seq.gb"
-#NEXTSTRAIN_CLADES="${BINDIR}/reference/clades.tsv"
-
-#source /home/idies/workspace/covid19/bashrc
-#conda activate nextstrain
-
 echo "Assigning nextstrain clades for consensus sequences in ${DIR}"
+
+mkdir -p ${OUTDIR}
 
 CONS_FASTA=$OUTDIR/postfilt_consensus_all.fasta
 
 if [ ! -f "${DIR}/$CONS_FASTA" ]; then
     echo " File : ${DIR}/$CONS_FASTA does not exist... Making "
-    ls ${DIR}/*.fasta | grep -v ${NTCPREFIX} | cat - > ${OUTDIR}/${CONS_FASTA}
+    ls ${DIR}/*.complete.fasta | grep -v ${NTCPREFIX} | cat - > ${OUTDIR}/${CONS_FASTA}
 fi
 
 #usage: assign_clades.py [-h] --sequences SEQUENCES --clade CLADE --gbk GBK [--output OUTPUT] [--keep-temporary-files] [--chunk-size CHUNK_SIZE]

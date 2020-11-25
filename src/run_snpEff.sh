@@ -15,11 +15,12 @@ DBNAME=$4
 NTCPREFIX=$5
 
 DIR="${OUTPUTDIR}/results/merging"   
-OUTDIR=${OUTPUTDIR}/final_results
+OUTDIR=${OUTPUTDIR}/results/snpEff
 
 #SNPEFF_CONFIG="${BINDIR}/reference/snpEff.config"
 #DBNAME="ncov"
 
+mkdir -p ${OUTDIR}
 SCRIPT_DIR="${BINDIR}/src"
 for vcf in $DIR/*.allcallers_combined.vcf; do
     ${SCRIPT_DIR}/annotate_variants.sh ${vcf} ${SNPEFF_CONFIG} ${DBNAME} ${OUTDIR}

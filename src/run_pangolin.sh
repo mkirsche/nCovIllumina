@@ -9,9 +9,9 @@ THREADS=$3
 PANGOLIN_DATA=$4
 NTCPREFIX=$5 # Empty if no NTCPREFIX
 
-DIR=${OUTPUTDIR}/final_results/complete_genomes/
+DIR=${OUTPUTDIR}/results/postfilt/
 
-OUTDIR=${OUTPUTDIR}/final_results/
+OUTDIR=${OUTPUTDIR}/results/pangolin
 
 #SCRIPTS PATH
 SCRIPT_DIR="${BINDIR}/src"
@@ -23,9 +23,11 @@ TMPDIR=$OUTDIR
 #conda activate pangolin
 echo "Making Pangolin lineages for consensus sequences in ${DIR}"
 
+mkdir -p ${OUTDIR}
+
 CONS_FASTA=$OUTDIR/postfilt_consensus_all.fasta
 if [ ! -f "${DIR}/$CONS_FASTA" ]; then
-   ls ${DIR}/*.fasta | grep -v ${NTCPREFIX} | cat - > ${CONS_FASTA}
+   ls ${DIR}/*.complete.fasta | grep -v ${NTCPREFIX} | cat - > ${CONS_FASTA}
 fi
 
 pangolin ${CONS_FASTA} -d ${PANGOLIN_DATA} -o ${OUTDIR} --outfile pangolin_lineage_report.csv --tempdir $TMPDIR -t ${THREADS}
