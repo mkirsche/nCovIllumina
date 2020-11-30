@@ -62,6 +62,7 @@ RUN curl http://data.nextstrain.org/nextstrain.yml --compressed -o nextstrain.ym
 WORKDIR /home/idies/workspace/covid19/code/
 RUN git clone https://github.com/cov-lineages/pangolin.git \
     && conda env create -f pangolin/environment.yml \
+    && conda activate pangolin \
     && cd pangolin && python setup.py install
 
 # install pipeline code
