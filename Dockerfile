@@ -53,6 +53,17 @@ WORKDIR /home/idies/workspace/covid19/code/
 RUN git clone --recurse-submodules https://github.com/connor-lab/ncov2019-artic-nf \
     && conda env create -f ncov2019-artic-nf/environments/illumina/environment.yml
 
+# install nextstrain pipeline
+WORKDIR /home/idies/workspace/covid19/code/
+RUN curl http://data.nextstrain.org/nextstrain.yml --compressed -o nextstrain.yml \
+    && conda env create -f nextstrain.yml
+
+# install pangolin pipeline
+WORKDIR /home/idies/workspace/covid19/code/
+RUN git clone https://github.com/cov-lineages/pangolin.git \
+    && conda env create -f pangolin/environment.yml \
+    && cd pangolin && python setup.py install
+
 # install pipeline code
 # WORKDIR /home/idies/workspace/covid19/code
 # RUN git clone --recurse-submodules https://github.com/mkirsche/nCovIllumina
