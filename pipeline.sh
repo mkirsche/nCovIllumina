@@ -10,6 +10,7 @@ else
 fi
 
 # Load parameters from config
+source $BINDIR/bashrc
 source $BINDIR/config/illumina.txt
 
 # Set up script parameters based on config setup
@@ -63,6 +64,7 @@ then
   javac $BINDIR/src/ParseIvarConfig.java
   extraargs=`java -cp $BINDIR/src ParseIvarConfig $BINDIR/config/illumina.txt`
   echo 'Running ivar'
+  conda activate artic-ncov2019-illumina
   $BINDIR/src/ivar.sh $FILTEREDINPUTDIR $extraargs
 fi
 
@@ -71,7 +73,7 @@ fi
 ## Call variants 
 
 # Load necessary conda environment
-source /home/idies/workspace/covid19/code/nCovIllumina/bashrc
+
 conda activate ncov_illumina
 
 # Call variants

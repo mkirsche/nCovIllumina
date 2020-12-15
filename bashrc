@@ -21,14 +21,5 @@ source /opt/conda/etc/profile.d/conda.sh
 
 conda activate artic-ncov2019-illumina
 
-# compile java libraries
-javac "/home/idies/workspace/covid19/code/nCovIllumina/VariantValidator/src"/*.java
-javac "/home/idies/workspace/covid19/code/vcfigv/src"/*.java
-
-# deal with primer scheme rename bugs
-#primer_schemes=/home/idies/workspace/covid19/code/nCovIllumina/artic-ncov2019/primer_schemes
-
-#samtools faidx "$primer_schemes/SARS-CoV-2/V3/nCoV-2019.reference.fasta"
-#for f in "$primer_schemes/SARS-CoV-2/V3/"*; do ln -sf "$f" "${f/nCoV-2019/SARS-CoV-2}"; done
-#ln -sf "$primer_schemes/SARS-CoV-2" "$primer_schemes/nCoV-2019"
-#ln -sf "$primer_schemes" "/home/idies/workspace/covid19/code/nCovIllumina/artic-ncov2019/primer-schemes"
+javac "/opt/nCovIllumina/VariantValidator/src"/*.java
+javac "/opt/nCovIllumina/vcfigv/src"/*.java
