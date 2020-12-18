@@ -4,3 +4,6 @@
 [submodule "artic-ncov2019"]
 	path = artic-ncov2019
 	url = git@github.com:artic-network/artic-ncov2019.git
+[submodule "config/nCoV-2019/V3/pangoLEARN"]
+	path = config/nCoV-2019/V3/pangoLEARN
+	url = https://github.com/cov-lineages/pangoLEARN.git
