@@ -11,7 +11,6 @@ fi
 
 # Load parameters from config
 source $BINDIR/bashrc
-source $BINDIR/config/illumina.txt
 
 # Set up script parameters based on config setup
 REFERENCE=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/*.reference.fasta
@@ -33,10 +32,11 @@ if [ "$#" -eq 2 ]
 then
     INPUTDIR=$1
     OUTPUTDIR=$2
+    CONFIG=$3
 fi
 
 cd $OUTPUTDIR
-
+source $CONFIG
 
 ## Load submodule
 if [ ! -r $BINDIR/VariantValidator/README.md ]
@@ -60,9 +60,10 @@ $BINDIR/src/filterreads.sh $INPUTDIR $FILTEREDINPUTDIR $BINDIR $MIN_READ_LENGTH 
 # Run iVar pipeline
 if [ ! -d $OUTPUTDIR/results ]
 then
+  mkdir "$OUTPUTDIR/results"
   echo 'Getting ivar config'
   javac $BINDIR/src/ParseIvarConfig.java
-  extraargs=`java -cp $BINDIR/src ParseIvarConfig $BINDIR/config/illumina.txt`
+  extraargs=`java -cp $BINDIR/src ParseIvarConfig $CONFIG`
   echo 'Running ivar'
   conda activate artic-ncov2019-illumina
   $BINDIR/src/ivar.sh $FILTEREDINPUTDIR $extraargs
