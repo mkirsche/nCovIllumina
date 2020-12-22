@@ -8,4 +8,4 @@ DATADIR=$1
 #fi
 EXTRAARGS=`echo "${@:2}"`
 echo 'Extra args: ' $EXTRAARGS
-nextflow run connor-lab/ncov2019-artic-nf --illumina --prefix test --directory $DATADIR $EXTRAARGS
+nextflow run connor-lab/ncov2019-artic-nf --illumina --prefix test --directory $DATADIR $EXTRAARGS -profile conda

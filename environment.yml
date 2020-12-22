@@ -1,4 +1,4 @@
-name: test_ncov_illumina
+name: ncov_illumina
 channels:
   - conda-forge
   - bioconda
