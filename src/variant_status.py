@@ -18,44 +18,52 @@ def case_by_flags(data,maf_flag):
     
     # situations that automatically lead to an alarm
     
-    ## CASE 1
+    ## near depth threshold
     if not pd.isna(data['depth_flag']):
-        return(1)
+        return('COV')
     
-    ## CASE 2
+    ## allele in negative control
     if not pd.isna(data['ntc_flag']):
-        return(2)
+        return('NTC')
     
-    ## CASE 3
+    ## variant callers disagree
     if not pd.isna(data['vc_flag']):
-        return(3)
+        if data['allele_freq']>maf_flag: # worrisome disgreement for high freq variant
+            return('DIS-HF')
+        else: # less worrisome disagreement for low freq variant
+            if data['in_consensus']==True:
+                return('DIS-CV')
+            else:
+                return('DIS-LF')
         
-    ## CASE 4
-    if data['allele_freq']<maf_flag and data['in_consensus']:
-        return(4)
+    ## low frequency variant in consensus
+    if data['allele_freq']<maf_flag and data['in_consensus']==True:
+        return('LFC')
     
-    ## CASE 5
+    ## high frequency variant not in consensus
     if data['allele_freq']>(1-maf_flag) and data['in_consensus']==False:
-        return (5)
+        return ('HFC')
     
     
     # situtions with mixed frequency variants
-    
+    other_allele_freq = float(int(data['alleles'].split(':')[11])/data['read_depth'])
     if not pd.isna(data['mixed_flag']):
         
-        ## CASE 6
+        ## ignore variant due to strand bias
         if data['in_consensus']==False and (not pd.isna(data['sb_flag'])):
-            return(6)
+            return('SB')
         
-        ## CASE 7
+        ## ignore mixture due to homopolymer
+        elif (other_allele_freq-0.02 <= (1-data['allele_freq']) <= other_allele_freq+0.02) and data['homopolymer'] and data['in_consensus']:
+            return('HP')
+        
+        ## consensus contains ambiguity codes
+        elif data['in_consensus']=='IUPAC':
+            return('MIX-A')
+        
+        ## all other mixed variants
         else:
-            other_allele_freq = float(int(data['alleles'].split(':')[11])/data['depth'])
-            if (other_allele_freq-0.02 <= (1-data['allele_freq']) <= other_allele_freq+0.02) and data['homopolymer'] and data['in_consensus']:
-                return(7)
-        
-            ## CASE 8
-            else:
-                return(8)
+            return('MIX-M')
     
     # at this point we know the frequency is either <maf_flag or >(1-maf_flag)
     # and that the in consensus status matches the high/low status
@@ -63,32 +71,33 @@ def case_by_flags(data,maf_flag):
     # specific situations for variants not seen before
     if not pd.isna(data['new_flag']):
         
-        ## CASE 9
-        if data['allele_freq']>0.9 and data['in_consensus']:
-            return(9)
+        ## new position at high frequency
+        if data['allele_freq']>0.9 and data['in_consensus']==True:
+            return('NEW-HF')
         
-        ## CASE 10
-        elif data['in_consensus']:
-            return(10)
+        ## new position at intermediate frequency
+        elif data['in_consensus']==True:
+            return('NEW-MF')
+    
+    # special designation for variants with ambiguity codes
+    if data['in_consensus']=='IUPAC':
+        return('MIX-A')
     
     # if there are no other worrisome flags
     # ignore low frequency variants and accept high frequency variants
     # remember we already know the consensus status matches the high/low status
-    # we also know that illumina is not mixed or maybe, and that if there is illumina data, illumina status matches high/low status
     
-    ## CASE 11
+    ## safely ignore low frequency variant
     if data['allele_freq']<maf_flag and data['unambig']:
-        return(11)
+        return('LFV')
     
-    ## CASE 12
+    ## safely accept high frequency variant
     if data['allele_freq']>(1-maf_flag) and data['unambig']:
-        return(12)
+        return('HFV')
     
     # at the end, ensure we catch all remaining consensus N variants
-    
-    ## CASE 13
     if data['unambig']==False:
-        return(13)
+        return('UNK-C')
     
     # all cases should be covered by this point
     # we should never get here

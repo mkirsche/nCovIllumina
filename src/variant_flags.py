@@ -150,7 +150,7 @@ def strand_bias_detected(info,alt,strand_threshold):
         return(np.nan,strand_counts) # no bias if both are high frequency
 
 
-def ambig_in_key_position(pos,key_vars,cons):
+def ambig_in_key_position(pos,key_vars,masked_align,var_idx):
     """ 
     Function that returns a flag string if a position is at an important site
     but is an ambiguous base ('N') in the consensus genome
@@ -166,22 +166,22 @@ def ambig_in_key_position(pos,key_vars,cons):
     
     # if it is an important position
     else:
-        if cons[pos-1]=='N':
+        if masked_align[1,var_idx]=='N':
             return('ambig in key position')
         else:
             return(np.nan)
         
 
-def in_homopolymer_region(pos):
+def in_homopolymer_region(pos,homopolymers):
     """ 
     Function that reports if the position is in a known homopolymer region
-    Currently uses a hard-coded list of positions, but can be expanded to take in output of other studies
     """
     
     # current homopolymer list
-    hp = [241,3037,10712,11083,12119,18898,21575,26730,29431,29700]
+    homopolymers = pd.read_csv(homopolymers,sep='\t',header=None,names=['pos'])
+    homopolymers = list(homopolymers.pos.values)
     
-    if pos in hp:
+    if pos in homopolymers:
         return(True)
     else:
         return(False)
