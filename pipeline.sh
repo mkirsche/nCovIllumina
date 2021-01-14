@@ -126,7 +126,7 @@ $BINDIR/src/callvariants.sh $OUTPUTDIR $BINDIR $REFERENCE $GENES
 ## Run postfiltering
 $BINDIR/src/run_postfilter.sh $OUTPUTDIR $BINDIR $NTCPREFIX $REFERENCE $GLOBALDIVERSITY $KEYPOS $CASEDEFS $AMPLICONS
 # run postfilter summary
-python $BINDIR/src/summarize_postfilter.py --rundir $OUTPUTDIR/results/postfilt
+#python $BINDIR/src/summarize_postfilter.py --rundir $OUTPUTDIR/results/postfilt
 
 #------------------------------------------------------------------------------
 
