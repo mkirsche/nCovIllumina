@@ -26,7 +26,7 @@ if [ -n "$NTC" ]; then
 	ntc_depthfile="$DIR/samtools/$NTC.mapped.primertrimmed.sorted.del.depth"
 	ntc_bamfile="$DIR/ncovIllumina_sequenceAnalysis_trimPrimerSequences/$NTC.mapped.primertrimmed.sorted.bam"
 	if [ ! -f $ntc_depthfile ]; then
-		echo "calculating depths for NTC ($samplename)"
+		echo "calculating depths for NTC"
 		python $BINDIR/src/calc_sample_depths.py $ntc_bamfile $ntc_depthfile $chromname
 	fi
 else
@@ -82,7 +82,7 @@ for consfile in $DIR/ncovIllumina_sequenceAnalysis_makeConsensus/*.consensus.fa;
 			alignment="$DIR/postfilt/$samplename.align.ref.fasta"
 
 			# run script
-			python $BINDIR/src/pf_working.py \
+			python $BINDIR/src/postfilter.py \
 			--vcffile $vcffile \
 			--depthfile $depthfile \
 			--aln-to-ref $alignment \
