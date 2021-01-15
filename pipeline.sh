@@ -94,7 +94,7 @@ javac $BINDIR/VariantValidator/src/*.java
 
 ## Filter reads by length
 FILTEREDINPUTDIR=$OUTPUTDIR'/filteredreads'
-$BINDIR/src/filterreads.sh $INPUTDIR $FILTEREDINPUTDIR $BINDIR $MIN_READ_LENGTH $MAX_READ_LENGTH
+#$BINDIR/src/filterreads.sh $INPUTDIR $FILTEREDINPUTDIR $BINDIR $MIN_READ_LENGTH $MAX_READ_LENGTH
 
 #------------------------------------------------------------------------------
 
@@ -120,7 +120,7 @@ fi
 conda activate ncov_illumina
 
 # Call variants
-$BINDIR/src/callvariants.sh $OUTPUTDIR $BINDIR $REFERENCE $GENES
+#$BINDIR/src/callvariants.sh $OUTPUTDIR $BINDIR $REFERENCE $GENES
 
 #------------------------------------------------------------------------------
 
