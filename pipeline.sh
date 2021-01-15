@@ -118,7 +118,6 @@ fi
 # Load necessary conda environment
 
 conda activate ncov_illumina
-conda install -y -c bioconda mafft
 
 # Call variants
 #$BINDIR/src/callvariants.sh $OUTPUTDIR $BINDIR $REFERENCE $GENES
