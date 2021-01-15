@@ -120,7 +120,7 @@ fi
 conda activate ncov_illumina
 
 # Call variants
-#$BINDIR/src/callvariants.sh $OUTPUTDIR $BINDIR $REFERENCE $GENES
+$BINDIR/src/callvariants.sh $OUTPUTDIR $BINDIR $REFERENCE $GENES
 
 #------------------------------------------------------------------------------
 
