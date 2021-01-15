@@ -1,0 +1,29 @@
+version: '3.7'
+strain: 
+virus: ncov
+gisaid_epi_isl: ?
+genbank_accession: ?
+date: 
+region: North America
+country: USA
+division: Maryland
+location: 
+region_exposure: Unknown
+country_exposure: Unknown
+division_exposure: Unknown
+segment: genome
+length: 
+host: Human
+age: ?
+sex: ?
+Nextstrain_clade: ?
+pangolin_lineage: ?
+GISAID_clade: ?
+originating_lab: JHU
+submitting_lab: JHU
+authors: JHU et al
+url: ?
+title: ?
+paper_url: ?
+date_submitted: 
+purpose_of_sequencing: ?
