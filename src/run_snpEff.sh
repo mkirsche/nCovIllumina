@@ -1,5 +1,7 @@
 #!/bin/bash
 
+conda activate ncov_illumina
+
 #TODO:
 # 1 ) Autogenerate snpEff config to be able to run for genomes other than COVID19
 # 2 ) Autobuild SnpEff db if not present

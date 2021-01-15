@@ -1,5 +1,7 @@
 #!/bin/bash
 
+conda activate ncov_illumina
+
 ## SET UP FILENAMES
 
 # get the output directory
