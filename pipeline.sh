@@ -69,6 +69,7 @@ GLOBALDIVERSITY=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/approx_global_diversity.t
 KEYPOS=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/key_positions.txt # clade-definiting positions
 CASEDEFS=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/variant_case_definitions.csv # types of variant annotations
 AMPLICONS=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/amplicons.tsv # amplicons file
+HOMOPOLYMERS=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/homopolymer_positions.txt # homopolymer positions
 
 REF_GB=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/reference_seq.gb
 PANGOLIN_DATA=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/pangoLEARN/pangoLEARN/data
@@ -124,7 +125,7 @@ $BINDIR/src/callvariants.sh $OUTPUTDIR $BINDIR $REFERENCE $GENES
 #------------------------------------------------------------------------------
 
 ## Run postfiltering
-$BINDIR/src/run_postfilter.sh $OUTPUTDIR $BINDIR $NTCPREFIX $REFERENCE $GLOBALDIVERSITY $KEYPOS $CASEDEFS $AMPLICONS
+$BINDIR/src/run_postfilter.sh $OUTPUTDIR $BINDIR $NTCPREFIX $REFERENCE $GLOBALDIVERSITY $KEYPOS $CASEDEFS $AMPLICONS $HOMOPOLYMERS
 # run postfilter summary
 #python $BINDIR/src/summarize_postfilter.py --rundir $OUTPUTDIR/results/postfilt
 
