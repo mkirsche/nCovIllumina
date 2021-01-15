@@ -1,5 +1,6 @@
 #!/bin/bash
 
+eval "$(conda shell.bash hook)"
 conda activate ncov_illumina
 
 #TODO:
