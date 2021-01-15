@@ -82,7 +82,7 @@ for consfile in $DIR/ncovIllumina_sequenceAnalysis_makeConsensus/*.consensus.fa;
 			alignment="$DIR/postfilt/$samplename.align.ref.fasta"
 
 			# run script
-			python $BINDIR/src/pf_working.py \
+			python $BINDIR/src/postfilter.py \
 			--vcffile $vcffile \
 			--depthfile $depthfile \
 			--aln-to-ref $alignment \
