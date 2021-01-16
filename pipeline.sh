@@ -98,6 +98,10 @@ if [ ! -r "$FILTEREDINPUTDIR" ]; then
   $BINDIR/src/filterreads.sh $INPUTDIR $FILTEREDINPUTDIR $BINDIR $MIN_READ_LENGTH $MAX_READ_LENGTH
 fi
 
+echo "---------------------------------"
+echo "READ FILTERING COMPLETE"
+echo "---------------------------------"
+
 #------------------------------------------------------------------------------
 
 ## Run iVar pipeline
@@ -112,6 +116,10 @@ if [ ! -d "$OUTPUTDIR/results" ]; then
   $BINDIR/src/ivar.sh $FILTEREDINPUTDIR $extraargs
 fi
 
+echo "---------------------------------"
+echo "IVAR PIPELINE COMPLETE"
+echo "---------------------------------"
+
 #------------------------------------------------------------------------------
 
 ## Call variants 
@@ -124,6 +132,10 @@ if [ ! -d "$OUTPUTDIR/results/merging " ]; then
   $BINDIR/src/callvariants.sh $OUTPUTDIR $BINDIR $REFERENCE $GENES
 fi
 
+echo "---------------------------------"
+echo "VARIANT CALLING AND MERGING COMPLETE"
+echo "---------------------------------"
+
 #------------------------------------------------------------------------------
 
 ## Run postfiltering
@@ -134,12 +146,20 @@ $BINDIR/src/run_postfilter.sh $OUTPUTDIR $BINDIR $NTCPREFIX $REFERENCE $GLOBALDI
 # run postfilter summary
 #python $BINDIR/src/summarize_postfilter.py --rundir $OUTPUTDIR/results/postfilt
 
+echo "---------------------------------"
+echo "POST-FILTERING COMPLETE"
+echo "---------------------------------"
+
 #------------------------------------------------------------------------------
 
 ## Run SnpEff
 if [ ! -d "$OUTPUTDIR/results/snpeff" ]; then
   $BINDIR/src/run_snpEff.sh $OUTPUTDIR $BINDIR $SNPEFF_CONFIG $DBNAME $NTCPREFIX
 fi
+
+echo "---------------------------------"
+echo "SNPEFF VARIANT ANNOTATION COMPLETE"
+echo "---------------------------------"
 
 #------------------------------------------------------------------------------
 
@@ -158,6 +178,10 @@ if [ ! -d "$OUTPUTDIR/results/pangolin" ]; then
   $BINDIR/src/run_pangolin.sh $OUTPUTDIR $BINDIR $THREADS $PANGOLIN_DATA $NTCPREFIX
 fi
 
+echo "---------------------------------"
+echo "PANGOLIN CLADE ASSIGNMENT COMPLETE"
+echo "---------------------------------"
+
 #------------------------------------------------------------------------------
 
 ## Run nextstrain clades 
@@ -169,6 +193,10 @@ conda activate nextstrain
 if [! -d "$OUTPUTDIR/results/nextstrain "]; then
   $BINDIR/src/run_nextstrain_clades.sh $OUTPUTDIR $BINDIR $REF_GB $NEXTSTRAIN_CLADES $NTCPREFIX
 fi
+
+echo "---------------------------------"
+echo "NEXTSTRAIN CLADE ASSIGNMENT COMPLETE"
+echo "---------------------------------"
 
 #------------------------------------------------------------------------------
 
