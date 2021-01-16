@@ -39,7 +39,7 @@ for VCF in $DIR/*.allcallers_combined.vcf; do
 	echo "running snpEff for $VCF_BASE"
 
 	# run snpeff annotation
-	snpEff eff -c ${SNPEFF_CONFIG} -dataDir ${CONFIG_DATA} ${DBNAME} ${VCF} > ${OUT_DIR}/${VCF_BASE}_ann.vcf
+	snpEff eff -c ${SNPEFF_CONFIG} -dataDir ${CONFIG_DATA} ${DBNAME} ${VCF} > ${OUTDIR}/${VCF_BASE}_ann.vcf
 
 	# make snpeff report
 	# Report of all 3 letter amino acide codes
