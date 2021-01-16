@@ -36,7 +36,7 @@ for VCF in $DIR/*.allcallers_combined.vcf; do
 	CONFIG_DATA=${CONFIG_DIR}/data/
 	AA_DATA=${CONFIG_DIR}/amino_acid_codes.txt
 
-	echo "running snpEff for VCF_BASE"
+	echo "running snpEff for $VCF_BASE"
 
 	# run snpeff annotation
 	snpEff eff -c ${SNPEFF_CONFIG} -dataDir ${CONFIG_DATA} ${DBNAME} ${VCF} > ${OUT_DIR}/${VCF_BASE}_ann.vcf
@@ -85,5 +85,3 @@ echo "Making final reports for samples in ${DIR}"
 
 ls ${OUTDIR}/*_ann_report.txt |  grep -v ${NTCPREFIX} | cat - | awk '$4 != "N" { print $0}'  | awk '!seen[$0]++' > ${OUTDIR}/final_snpEff_report.txt
 ls ${OUTDIR}/*_ann_report.txt |  grep -v ${NTCPREFIX} | cat - | awk '!seen[$0]++' | awk 'NR == 1  || $4 == "N" { print $0}'  > ${OUTDIR}/snpEff_report_with_Ns.txt
-
-echo "SNPEFF SCRIPT COMPLETE"

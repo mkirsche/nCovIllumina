@@ -43,14 +43,16 @@ do
   fi
 
   # Call and filter freebayes variants
-  freebayesunfiltered=$FREEBAYESDIR/$prefix.unfiltered.vcf
-  echo 'Calling freebayes variants: ' $freebayesunfiltered
-  freebayes -f $REFERENCE $bamfile > $freebayesunfiltered
+  if [ ! -r "$FREEBAYESDIR/$prefix.vcf" ]; then
+    freebayesunfiltered=$FREEBAYESDIR/$prefix.unfiltered.vcf
+    echo 'Calling freebayes variants: ' $freebayesunfiltered
+    freebayes -f $REFERENCE $bamfile > $freebayesunfiltered
 
-  freebayesvcf=$FREEBAYESDIR/$prefix.vcf
-  echo 'Filtering freebayes variants: '$freebayesvcf
-  vcftools --vcf $freebayesunfiltered --minQ 10 --min-meanDP 20 --recode --recode-INFO-all --out $freebayesvcf
-  mv $freebayesvcf.recode.vcf $freebayesvcf
+    freebayesvcf=$FREEBAYESDIR/$prefix.vcf
+    echo 'Filtering freebayes variants: '$freebayesvcf
+    vcftools --vcf $freebayesunfiltered --minQ 10 --min-meanDP 20 --recode --recode-INFO-all --out $freebayesvcf
+    mv $freebayesvcf.recode.vcf $freebayesvcf
+  fi
 
   # Run samtools mpileup andvariant calling
   mpileupfile=$SAMTOOLSDIR/$prefix.mpileup
@@ -61,8 +63,10 @@ do
     samtools mpileup -Q 0 --reference $REFERENCE $bamfile -o $mpileupfile
   fi
  
-  samtoolsvcf=$SAMTOOLSDIR/$prefix.samtools.vcf
-  java -cp $BINDIR/VariantValidator/src CallVariants flag_prefix=ILLUMINA_ pileup_file=$mpileupfile out_file=$samtoolsvcf
+  if [ ! -r "$SAMTOOLSDIR/$prefix.samtools.vcf" ]; then
+    samtoolsvcf=$SAMTOOLSDIR/$prefix.samtools.vcf
+    java -cp $BINDIR/VariantValidator/src CallVariants flag_prefix=ILLUMINA_ pileup_file=$mpileupfile out_file=$samtoolsvcf
+  fi
 
   # Create list of VCFs for merging
   filelist=$MERGINGDIR/$prefix.filelist.txt

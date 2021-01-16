@@ -128,7 +128,7 @@ echo "---------------------------------"
 conda activate ncov_illumina
 
 # Call variants
-if [ ! -d "$OUTPUTDIR/results/merging " ]; then
+if [ ! -d "$OUTPUTDIR/results/merging" ]; then
   $BINDIR/src/callvariants.sh $OUTPUTDIR $BINDIR $REFERENCE $GENES
 fi
 

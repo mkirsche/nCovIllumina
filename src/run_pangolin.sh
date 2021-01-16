@@ -35,4 +35,3 @@ fi
 
 pangolin ${CONS_FASTA} -d ${PANGOLIN_DATA} -o ${OUTDIR} --outfile pangolin_lineage_report.csv --tempdir $TMPDIR -t ${THREADS}
 
-echo "PANGOLIN SCRIPT DONE"
