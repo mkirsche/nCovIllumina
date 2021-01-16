@@ -1,7 +1,8 @@
 #!/bin/bash
 
-
 # Run it in nextstrain env
+eval "$(conda shell.bash hook)"
+conda activate nextstrain
 
 #Run directory
 OUTPUTDIR=$1
@@ -31,5 +32,6 @@ fi
 #usage: assign_clades.py [-h] --sequences SEQUENCES --clade CLADE --gbk GBK [--output OUTPUT] [--keep-temporary-files] [--chunk-size CHUNK_SIZE]
 #                        [--nthreads NTHREADS]
 
-${SCRIPT_DIR}/assign_clades.py --sequences ${CONS_FASTA} --output ${OUTDIR}/nextstrain_clades.tsv --gbk ${REF_GB} --clade ${NEXTSTRAIN_CLADES}
-echo "DONE"
+python3 ${SCRIPT_DIR}/assign_clades.py --sequences ${CONS_FASTA} --output ${OUTDIR}/nextstrain_clades.tsv --gbk ${REF_GB} --clade ${NEXTSTRAIN_CLADES}
+
+echo "NEXTSTRAIN CLADE ASSIGNMENT DONE"
