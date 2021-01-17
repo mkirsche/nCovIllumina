@@ -152,13 +152,6 @@ echo "---------------------------------"
 
 #------------------------------------------------------------------------------
 
-gawk '
- BEGIN {
-   a = "abc15d56ef";
-   b = gensub(/.*([0-9][0-9])d([0-9][0-9]).*/, "\\2 \\1", "g", a);
-   print b;
- }'
-
 ## Run SnpEff
 if [ ! -d "$OUTPUTDIR/results/snpeff" ]; then
   $BINDIR/src/run_snpEff.sh $OUTPUTDIR $BINDIR $SNPEFF_CONFIG $NTCPREFIX
