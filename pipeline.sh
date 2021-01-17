@@ -74,7 +74,7 @@ HOMOPOLYMERS=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/homopolymer_positions.txt # 
 REF_GB=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/reference_seq.gb
 PANGOLIN_DATA=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/pangoLEARN/pangoLEARN/data
 NEXTSTRAIN_CLADES=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/clades.tsv
-SNPEFF_CONFIG=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/snpEff.config
+SNPEFF_CONFIG=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/snpEff/snpEff.config
 
 cd "$OUTPUTDIR"
 source "$CONFIG"
@@ -154,7 +154,7 @@ echo "---------------------------------"
 
 ## Run SnpEff
 if [ ! -d "$OUTPUTDIR/results/snpeff" ]; then
-  $BINDIR/src/run_snpEff.sh $OUTPUTDIR $BINDIR $SNPEFF_CONFIG $DBNAME $NTCPREFIX
+  $BINDIR/src/run_snpEff.sh $OUTPUTDIR $BINDIR $SNPEFF_CONFIG $NTCPREFIX
 fi
 
 echo "---------------------------------"
@@ -171,6 +171,9 @@ fi
 
 # load the pangolin-specific conda environment
 conda deactivate
+
+pwd
+conda info --envs
 conda activate pangolin
 
 # run pangolin
