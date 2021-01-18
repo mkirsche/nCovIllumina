@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+eval "$(conda shell.bash hook)"
+conda activate ncov_illumina
+
 ###
 
 # Run snpeff annotations for variant calls

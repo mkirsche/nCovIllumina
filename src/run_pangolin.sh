@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # Run it in Pangolin environment
+eval "$(conda shell.bash hook)"
+conda activate pangolin
 
 #Run directory
 OUTPUTDIR=$1
@@ -33,4 +35,3 @@ fi
 
 pangolin ${CONS_FASTA} -d ${PANGOLIN_DATA} -o ${OUTDIR} --outfile pangolin_lineage_report.csv --tempdir $TMPDIR -t ${THREADS}
 
-echo "DONE"

@@ -1,4 +1,8 @@
 #!/bin/bash
+set -eo pipefail
+
+eval "$(conda shell.bash hook)"
+conda activate ncov_illumina
 
 ## SET UP FILENAMES
 
