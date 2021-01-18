@@ -36,8 +36,8 @@ import yaml
 warnings.simplefilter(action='ignore', category=FutureWarning)
 pd.options.mode.chained_assignment = None  # default='warn'
 
-DATE_FMT ="%Y%m%d"
-SUB_FMT ="%Y-%m-%d"
+#DATE_FMT ="%Y%m%d"
+DATE_FMT ="%Y-%m-%d"
 REF_LENGTH = 29903
 count_Ns = 5000
 N_DAYS=14
@@ -56,8 +56,9 @@ def generate_date(n_days,date_fmt):
     start = end - timedelta(days=n_days)
     random_date = start + (end - start) * random.random()
     return random_date.strftime(date_fmt)
+    #return random_date.strptime(date_fmt)
 
-def prepare_metadata(sname_list, meta_dict, len_dict, pangolin_dict, next_dict, n_days, out_file ):
+def prepare_metadata(sname_list, meta_dict, len_dict, pangolin_dict, next_dict, n_days,date_fmt,out_file ):
     """ Prepare metadata dict as per the config fields """
     meta_df = pd.DataFrame(columns = meta_dict.keys())
     samples = {'strain': sname_list}
@@ -69,16 +70,17 @@ def prepare_metadata(sname_list, meta_dict, len_dict, pangolin_dict, next_dict, 
         if col not in ["strain" , "pangolin_lineage" , "Nextstrain_clade" , "length", "date" , "date_submitted"]:
            meta_df[col] = meta_dict[col]
         if col == "pangolin_lineage":
-           meta_df['pangolin_lineage'] = df['strain'].map(pangolin_dict)
+           meta_df['pangolin_lineage'] = meta_df['strain'].map(pangolin_dict)
         if col == "Nextstrain_clade":
-           meta_df['Nextstrain_clade'] = df['strain'].map(next_dict)
+           meta_df['Nextstrain_clade'] = meta_df['strain'].map(next_dict)
         if col == "length":
-           meta_df['length'] = df['strain'].map(len_dict)
+           meta_df['length'] = meta_df['strain'].map(len_dict)
         if col == "date":
-           meta_df['date'] = [generate_date(n_days,cur_date) for i in range(1,len(sname_list))]
+           meta_df['date'] = [generate_date(n_days,date_fmt) for i in range(0,len(sname_list))]
         if col == "date_submitted":
            meta_df['date'] = cur_date.strftime(date_fmt)
     meta_df.to_csv(out_file, mode='w', sep="\t",header=True)
+    return meta_df
 
 def get_fasta_lengths(fasta):
     fa_lens = []
@@ -142,26 +144,25 @@ def parse_tsv(file,col=None):
     if col:
        df = pd.read_table(file,sep="\t",header=col,skip_blank_lines=True)
     else:
-       df = pd.read_table(file,sep="\t",header=None,skip_blank_lines=True)
+       df = pd.read_table(file,sep="\t",header=0,skip_blank_lines=True)
     log("INFO : Parsed number of rows :" +  str(df.shape[0]) + " , columns :" + str(df.shape[1]) )
     return df 
 
-def parse_tsv_to_dict(file,col1, col2):
+def parse_tsv_to_dict(file,col1,col2):
     """ Parse tsv files into a dict of 2 columns"""
     df = pd.read_table(file,sep="\t",header=0,skip_blank_lines=True) 
-    vdict = dict(zip(df.col1, df.col2)) 
+    vdict = dict(zip(df[col1], df[col2])) 
     return vdict
 
 def parse_csv_to_dict(file,col1, col2):
     """ Parse tsv files into a dict of 2 columns"""
     df = pd.read_csv(file, sep=",",header=0,skip_blank_lines=True) 
-    vdict = dict(zip(df.col1, df.col2)) 
+    vdict = dict(zip(df[col1], df[col2])) 
     return vdict
 
 def parse_yaml(file):
     """ Parse yaml file into a dict""" 
     try:
-       print(file)
        with open(file) as f:
             return yaml.safe_load(f)  
     except:
@@ -176,13 +177,13 @@ def concat_fasta_files(fa_list, out):
        for fname in fa_list:
            ffile = glob.glob(fname)[0]
            g_lengths, n_counts = get_fasta_lengths(ffile)
-           if g_lengths[0] < 25000 or n_counts[0] < 5000:
-              filt_fnames.append(ffile)
-              with open(ffile) as infile:
-                 for line in infile:
+           #if g_lengths[0] < 25000 or n_counts[0] < 5000:
+           filt_fnames.append(ffile)
+           with open(ffile) as infile:
+                for line in infile:
                     outfile.write(line)
-           else:
-              log("INFO : Skipping {0} from alpha Genome Length :  {1} , N_counts : {2}".format(fname,g_lengths[0],n_counts[0]))
+           #else:
+           #   log("INFO : Skipping {0} from alpha Genome Length :  {1} , N_counts : {2}".format(fname,g_lengths[0],n_counts[0]))
     return filt_fnames
 
 def get_latest_file(path, *paths):
@@ -215,7 +216,8 @@ if __name__ == "__main__":
     
     if bool(args.RUN_DIR) ^ bool(args.FASTA_PATH):
        parser.error('--rundir, --fasta-path must be given together')
-    
+    if bool(args.GLOBAL_SEQ) ^ bool(args.GLOBAL_META):
+       parser.error('--global-seq , --global-meta must be given together') 
     outdir = args.OUTPUT_DIR
      
     if not os.path.exists(outdir):
@@ -232,7 +234,7 @@ if __name__ == "__main__":
     
     sample_names = get_fasta_header(fasta) 
     glens , n_counts = get_fasta_lengths(fasta)
-    glens_dict = zip ( sample_names, glens )
+    glens_dict = dict ( zip ( sample_names, glens ))
 
     if args.NEXT_META:
        next_metadata = args.NEXT_META
@@ -242,23 +244,33 @@ if __name__ == "__main__":
        next_metadata = os.path.join(outdir,"run_sequences_metadata.tsv")
        if args.CONFIG_META:
           meta_fields = parse_yaml(args.CONFIG_META)
-          print(meta_fields)
        # parse pangolin
        if args.P_CLADE:
           pangolin_dict = parse_csv_to_dict(args.P_CLADE,"taxon" , "lineage")
-          print(pangolin_dict)
        else:
           log("WARNING : Pangolin  clade output file not provided; Set to ? for all samples " )
+          ## TODO: Run pangolin script
           pangolin_dict = dict(zip(sample_names,["?" for i in sample_names ])) 
-          print(pangolin_dict)
        # parse nextstrain
        if args.NEXT_CLADE:
+          ## TODO: Run nextstrain clade script
           next_dict = parse_tsv_to_dict(args.NEXT_CLADE,"name","clade") 
-          print(next_dict)
        else:
           log("WARNING : Nextstrain clade output file not provided; Set to ? for all samples " )
           next_dict = dict(zip(sample_names,["?" for i in sample_names ])) 
-          print(next_dict)
        log("INFO : Generating metadata for the samples " )
-       prepare_metadata(sample_names, meta_fields, glens_dict, pangolin_dict, next_dict, N_DAYS, next_metadata)
+       local_meta = prepare_metadata(sample_names, meta_fields, glens_dict, pangolin_dict, next_dict, N_DAYS,DATE_FMT, next_metadata)
+       log("INFO : Output local metadata : " + next_metadata )
+       if args.GLOBAL_META:
+          g_df = parse_tsv(args.GLOBAL_META,col=0)
+          all_seq_meta_df = pd.merge(local_meta,g_df, on='strain', how='outer')
+          log("INFO:  Combining local and global metadata for nextstrain" )     
+          all_seq_meta = os.path.join(outdir,"all_sequences_metadata.tsv")
+          all_seq_meta_df.to_csv(all_seq_meta, mode='w', sep="\t",header=True)
+          log("INFO : Output final metadata : " + all_seq_meta )
+       if args.GLOBAL_SEQ:
+          all_seq_fasta = os.path.join(outdir,"all_sequences.fasta")
+          concat_fasta_files([ fasta , args.GLOBAL_SEQ ],all_seq_fasta)
+          log("INFO : Output final sequences : " + all_seq_fasta )
+             
        log("INFO : Done !!!")
