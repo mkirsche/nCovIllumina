@@ -28,10 +28,9 @@ echo "Making Pangolin lineages for consensus sequences in ${DIR}"
 mkdir -p ${OUTDIR}
 
 CONS_FASTA=$OUTDIR/postfilt_consensus_all.fasta
-if [ ! -f "${DIR}/$CONS_FASTA" ]; then
+if [ ! -f "$CONS_FASTA" ]; then
    #ls ${DIR}/*.complete.fasta | grep -v ${NTCPREFIX} | cat - > ${CONS_FASTA}
    ls ${DIR}/*.complete.fasta | grep -v ${NTCPREFIX}".complete.fasta" | xargs -I % cat % > ${CONS_FASTA}
 fi
 
 pangolin ${CONS_FASTA} -d ${PANGOLIN_DATA} -o ${OUTDIR} --outfile pangolin_lineage_report.csv --tempdir $TMPDIR -t ${THREADS}
-

@@ -2,19 +2,8 @@
 """
 Script to prepare nextstrain alpha files
 """
-###TODO
-# Run_dir, file pattern given make multifasta files
-# Take multifasta file and make nextstrain fake metadata
+## TODO: 
 # NEXT_METADATA ( optional ) if provided check if fields are present and throw error if not 
-#  (
-
-# Assumptions : Second column sample_name is unique by itself and only the latest run for the sample is retained in submission manifest
-#1) Get files in the submission manifest from seq_path 
-#2) Exclude submitted files as GISAID will already have it
-#3) Add submitted files to local build only
-#4) If metadata exists use metadata
-#5) Else create fake metadata for the non existing samples
-
 
 import pandas as pd
 import numpy as np 

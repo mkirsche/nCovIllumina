@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -eo pipefail
 
@@ -28,6 +28,11 @@ if [ ! -d "$OUTDIR" ]; then
 	mkdir -p ${OUTDIR}
 fi
 
+if ! [ -x "$(command -v snpEff)" ]; then
+  echo 'Error: snpEff is not installed in ${PATH} ' >&2
+  exit 1
+fi
+ 
 for VCF in $DIR/*.allcallers_combined.vcf; do
 
 	VCF_BASE=$( basename ${VCF} ".vcf")
@@ -80,7 +85,7 @@ for VCF in $DIR/*.allcallers_combined.vcf; do
 
 done
 
-echo "Making final reports for samples in ${DIR}"
+echo "Making final reports for samples in ${OUTDIR}"
 
-ls ${OUTDIR}/*_ann_report.txt |  grep -v ${NTCPREFIX}*ann_report.txt | cat - | awk '$4 != "N" { print $0}'  | awk '!seen[$0]++' > ${OUTDIR}/final_snpEff_report.txt
-ls ${OUTDIR}/*_ann_report.txt |  grep -v ${NTCPREFIX}*ann_report.txt | cat - | awk '!seen[$0]++' | awk 'NR == 1  || $4 == "N" { print $0}'  > ${OUTDIR}/snpEff_report_with_Ns.txt
+ls ${OUTDIR}/*_ann_report.txt |  grep -v ${NTCPREFIX}*ann_report.txt | xargs -I % cat % | awk '$4 != "N" { print $0}'  | awk '!seen[$0]++' > ${OUTDIR}/final_snpEff_report.txt
+ls ${OUTDIR}/*_ann_report.txt |  grep -v ${NTCPREFIX}*ann_report.txt | xargs -I % cat % | awk '!seen[$0]++' | awk 'NR == 1  || $4 == "N" { print $0}'  > ${OUTDIR}/snpEff_report_with_Ns.txt
