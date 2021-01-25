@@ -37,7 +37,7 @@ for bam in $OUTPUTDIR/results/ncovIllumina_sequenceAnalysis_trimPrimerSequences/
 done
 
 # Summarize variants and copy into final results folder
-python $BINDIR/summarize_postfilter.py --rundir $OUTPUTDIR/results/postfilt/ --annot $OUTPUTDIR/results/snpEff/final_snpEff_report.txt
+python $BINDIR/src/summarize_postfilter.py --rundir $OUTPUTDIR/results/postfilt/ --annot $OUTPUTDIR/results/snpEff/final_snpEff_report.txt
 cp $OUTPUTDIR/results/postfilt/postfilt_all.txt $OUTPUTDIR/final_results/all_variants.txt
 cp $OUTPUTDIR/results/postfilt/postfilt_all_annot.txt $OUTPUTDIR/final_results/all_variants_annotated.txt
 cp $OUTPUTDIR/results/postfilt/postfilt_all_annot_consensus.txt $OUTPUTDIR/final_results/all_consensus_variants_annotated.txt
