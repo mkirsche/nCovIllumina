@@ -169,12 +169,8 @@ if [ -z $THREADS ]; then
    THREADS=1
 fi
 
-# load the pangolin-specific conda environment
+# pangolin-specific conda environment loaded in pangolin script
 conda deactivate
-
-pwd
-conda info --envs
-conda activate pangolin
 
 # run pangolin
 if [ ! -d "$OUTPUTDIR/results/pangolin" ]; then
@@ -189,9 +185,8 @@ echo "---------------------------------"
 
 ## Run nextstrain clades 
 
-# load the next-strain specific conda environment
+# next-strain specific conda environment loaded in nextstrain script
 conda deactivate
-conda activate nextstrain
 
 if [! -d "$OUTPUTDIR/results/nextstrain "]; then
   $BINDIR/src/run_nextstrain_clades.sh $OUTPUTDIR $BINDIR $REF_GB $NEXTSTRAIN_CLADES $NTCPREFIX
