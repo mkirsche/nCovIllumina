@@ -188,7 +188,7 @@ echo "---------------------------------"
 # next-strain specific conda environment loaded in nextstrain script
 conda deactivate
 
-if [! -d "$OUTPUTDIR/results/nextstrain "]; then
+if [! -d "$OUTPUTDIR/results/nextstrain" ]; then
   $BINDIR/src/run_nextstrain_clades.sh $OUTPUTDIR $BINDIR $REF_GB $NEXTSTRAIN_CLADES $NTCPREFIX
 fi
 
