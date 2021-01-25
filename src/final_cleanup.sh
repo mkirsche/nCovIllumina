@@ -1,10 +1,8 @@
 ### Script to move final out-facing data into one directory
 
-# Get top level run directory
 OUTPUTDIR=$1
-
-# Get NTC name
-NTCPREFIX=$2
+BINDIR=$2
+NTCPREFIX=$3
 
 # Set up sub-directory in which to store final results
 if [ ! -d $OUTPUTDIR/final_results ]; then
@@ -15,7 +13,7 @@ if [ ! -d $OUTPUTDIR/final_results ]; then
 fi
 
 
-# Copy postfiltering results into final results folder
+# Copy final genomes into final results folder
 for bam in $OUTPUTDIR/results/ncovIllumina_sequenceAnalysis_trimPrimerSequences/*.primertrimmed.sorted.bam; do
   
   sample=${bam##*/}
@@ -38,11 +36,8 @@ for bam in $OUTPUTDIR/results/ncovIllumina_sequenceAnalysis_trimPrimerSequences/
 
 done
 
-mv $OUTPUTDIR/results/postfilt/postfilt_all.txt $OUTPUTDIR/final_results/all_variants_annotated.txt
-mv $OUTPUTDIR/results/postfilt/postfilt_summary.txt $OUTPUTDIR/final_results/run_summary.txt
-
-
-# Copy annotated variants file into final results folder
-
-
-# Copy PDF report into final results folder
+# Summarize variants and copy into final results folder
+python $BINDIR/summarize_postfilter.py --rundir $OUTPUTDIR/results/postfilt/ --annot $OUTPUTDIR/results/snpEff/final_snpEff_report.txt
+cp $OUTPUTDIR/results/postfilt/postfilt_all.txt $OUTPUTDIR/final_results/all_variants.txt
+cp $OUTPUTDIR/results/postfilt/postfilt_all_annot.txt $OUTPUTDIR/final_results/all_variants_annotated.txt
+cp $OUTPUTDIR/results/postfilt/postfilt_all_annot_consensus.txt $OUTPUTDIR/final_results/all_consensus_variants_annotated.txt
