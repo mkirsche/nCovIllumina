@@ -153,7 +153,7 @@ echo "---------------------------------"
 #------------------------------------------------------------------------------
 
 ## Run SnpEff
-if [ ! -d "$OUTPUTDIR/results/snpeff" ]; then
+if [ ! -d "$OUTPUTDIR/results/snpEff" ]; then
   $BINDIR/src/run_snpEff.sh $OUTPUTDIR $BINDIR $SNPEFF_CONFIG $NTCPREFIX
 fi
 
