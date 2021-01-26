@@ -60,7 +60,7 @@ do
   if [ ! -r $mpileupfile ]
   then
     echo 'Running mpileup: ' $mpileupfile  
-    samtools mpileup -Q 0 --reference $REFERENCE $bamfile -o $mpileupfile
+    samtools mpileup -A -Q 0 --reference $REFERENCE $bamfile -o $mpileupfile
   fi
  
   if [ ! -r "$SAMTOOLSDIR/$prefix.samtools.vcf" ]; then
