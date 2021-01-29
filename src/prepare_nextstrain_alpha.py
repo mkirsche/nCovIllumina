@@ -252,10 +252,12 @@ if __name__ == "__main__":
        log("INFO : Output local metadata : " + next_metadata )
        if args.GLOBAL_META:
           g_df = parse_tsv(args.GLOBAL_META,col=0)
-          all_seq_meta_df = pd.merge(local_meta,g_df, on='strain', how='outer')
+          #all_seq_meta_df = pd.concat([local_meta,g_df],axis=1)
+          all_seq_meta_df = pd.merge(local_meta,g_df, on='strain', how='outer',left_index=True, right_index=True,suffixes=('', '_DROP')).filter(regex='^(?!.*_DROP)')
+          all_seq_meta_df.replace(np.nan, "Unknown", inplace=True)
           log("INFO:  Combining local and global metadata for nextstrain" )     
           all_seq_meta = os.path.join(outdir,"all_sequences_metadata.tsv")
-          all_seq_meta_df.to_csv(all_seq_meta, mode='w', sep="\t",header=True)
+          all_seq_meta_df.to_csv(all_seq_meta, mode='w', sep="\t",header=True,index = False)
           log("INFO : Output final metadata : " + all_seq_meta )
        if args.GLOBAL_SEQ:
           all_seq_fasta = os.path.join(outdir,"all_sequences.fasta")
