@@ -43,12 +43,12 @@ do
   fi
 
   # Call and filter freebayes variants
-  if [ ! -r "$FREEBAYESDIR/$prefix.vcf" ]; then
+  freebayesvcf=$FREEBAYESDIR/$prefix.vcf
+  if [ ! -r $freebayesvcf ]; then
     freebayesunfiltered=$FREEBAYESDIR/$prefix.unfiltered.vcf
     echo 'Calling freebayes variants: ' $freebayesunfiltered
     freebayes -f $REFERENCE $bamfile > $freebayesunfiltered
 
-    freebayesvcf=$FREEBAYESDIR/$prefix.vcf
     echo 'Filtering freebayes variants: '$freebayesvcf
     vcftools --vcf $freebayesunfiltered --minQ 10 --min-meanDP 20 --recode --recode-INFO-all --out $freebayesvcf
     mv $freebayesvcf.recode.vcf $freebayesvcf
@@ -60,11 +60,11 @@ do
   if [ ! -r $mpileupfile ]
   then
     echo 'Running mpileup: ' $mpileupfile  
-    samtools mpileup -Q 0 --reference $REFERENCE $bamfile -o $mpileupfile
+    samtools mpileup -A -Q 0 --reference $REFERENCE $bamfile -o $mpileupfile
   fi
  
-  if [ ! -r "$SAMTOOLSDIR/$prefix.samtools.vcf" ]; then
-    samtoolsvcf=$SAMTOOLSDIR/$prefix.samtools.vcf
+  samtoolsvcf=$SAMTOOLSDIR/$prefix.samtools.vcf
+  if [ ! -r $samtoolsvcf ]; then
     java -cp $BINDIR/VariantValidator/src CallVariants flag_prefix=ILLUMINA_ pileup_file=$mpileupfile out_file=$samtoolsvcf
   fi
 

@@ -7,6 +7,7 @@ public class ParseIvarConfig {
 public static void main(String[] args) throws Exception
 {
 	HashMap<String, String> settingToArg = new HashMap<String, String>();
+	settingToArg.put("MIN_READ_LEN", "illuminaKeepLen");
 	settingToArg.put("IVAR_MIN_FREQ_THRESHOLD", "ivarMinFreqThreshold");
 	settingToArg.put("IVAR_CONSENSUS_FREQ_THRESHOLD", "ivarFreqThreshold");
 	settingToArg.put("IVAR_MIN_DEPTH", "ivarMinDepth");

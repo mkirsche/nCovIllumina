@@ -153,7 +153,7 @@ echo "---------------------------------"
 #------------------------------------------------------------------------------
 
 ## Run SnpEff
-if [ ! -d "$OUTPUTDIR/results/snpeff" ]; then
+if [ ! -d "$OUTPUTDIR/results/snpEff" ]; then
   $BINDIR/src/run_snpEff.sh $OUTPUTDIR $BINDIR $SNPEFF_CONFIG $NTCPREFIX
 fi
 
@@ -165,43 +165,42 @@ echo "---------------------------------"
 
 ## Run pangolin clades
 
-if [ -z $THREADS ]; then
-   THREADS=1
-fi
+#if [ -z $THREADS ]; then
+#   THREADS=1
+#fi
 
-# load the pangolin-specific conda environment
-conda deactivate
+## pangolin-specific conda environment loaded in pangolin script
+#conda deactivate
 
-pwd
-conda info --envs
-conda activate pangolin
-
-# run pangolin
-if [ ! -d "$OUTPUTDIR/results/pangolin" ]; then
-  $BINDIR/src/run_pangolin.sh $OUTPUTDIR $BINDIR $THREADS $PANGOLIN_DATA $NTCPREFIX
-fi
+## run pangolin
+#if [ ! -d "$OUTPUTDIR/results/pangolin" ]; then
+#  $BINDIR/src/run_pangolin.sh $OUTPUTDIR $BINDIR $THREADS $PANGOLIN_DATA $NTCPREFIX
+#fi
 
 echo "---------------------------------"
-echo "PANGOLIN CLADE ASSIGNMENT COMPLETE"
+echo "PANGOLIN CLADE ASSIGNMENT SKIPPED"
 echo "---------------------------------"
 
 #------------------------------------------------------------------------------
 
 ## Run nextstrain clades 
 
-# load the next-strain specific conda environment
-conda deactivate
-conda activate nextstrain
+# next-strain specific conda environment loaded in nextstrain script
+#conda deactivate
 
-if [! -d "$OUTPUTDIR/results/nextstrain "]; then
-  $BINDIR/src/run_nextstrain_clades.sh $OUTPUTDIR $BINDIR $REF_GB $NEXTSTRAIN_CLADES $NTCPREFIX
-fi
+#if [! -d "$OUTPUTDIR/results/nextstrain" ]; then
+#  $BINDIR/src/run_nextstrain_clades.sh $OUTPUTDIR $BINDIR $REF_GB $NEXTSTRAIN_CLADES $NTCPREFIX
+#fi
 
 echo "---------------------------------"
-echo "NEXTSTRAIN CLADE ASSIGNMENT COMPLETE"
+echo "NEXTSTRAIN CLADE ASSIGNMENT SKIPPED"
 echo "---------------------------------"
 
 #------------------------------------------------------------------------------
 
 ## Copy final results into final folder
-$BINDIR/src/final_cleanup.sh $OUTPUTDIR $NTCPREFIX
+$BINDIR/src/final_cleanup.sh $OUTPUTDIR $BINDIR $NTCPREFIX
+
+echo "---------------------------------"
+echo "END OF PIPELINE"
+echo "---------------------------------"
