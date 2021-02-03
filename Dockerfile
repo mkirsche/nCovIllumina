@@ -58,7 +58,9 @@ RUN conda env create -f environment.yml
 
 RUN conda install -c bioconda -y nextflow matplotlib
 
-COPY . .
+USER root
+COPY --chown=idies:idies . .
 
+USER idies
 COPY bashrc /home/idies/.bashrc
 WORKDIR /home/idies
