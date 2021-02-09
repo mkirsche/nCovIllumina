@@ -3,7 +3,7 @@
 Script to prepare nextstrain alpha files
 """
 ## TODO: 
-# NEXT_METADATA ( optional ) if provided check if fields are present and throw error if not 
+# Add extra metadata columns if provided in next_meta parameter 
 
 import pandas as pd
 import numpy as np 
@@ -21,6 +21,7 @@ import warnings
 from pytz import timezone
 from Bio import SeqIO
 import yaml
+from shutil import copyfile
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 pd.options.mode.chained_assignment = None  # default='warn'
@@ -68,7 +69,7 @@ def prepare_metadata(sname_list, meta_dict, len_dict, pangolin_dict, next_dict, 
            meta_df['date'] = [generate_date(n_days,date_fmt) for i in range(0,len(sname_list))]
         if col == "date_submitted":
            meta_df['date'] = cur_date.strftime(date_fmt)
-    meta_df.to_csv(out_file, mode='w', sep="\t",header=True)
+    meta_df.to_csv(out_file, mode='w', sep="\t",header=True,index=False)
     return meta_df
 
 def get_fasta_lengths(fasta):
@@ -156,6 +157,14 @@ def parse_yaml(file):
             return yaml.safe_load(f)  
     except:
        raise
+
+def write_yaml(conf_dict,out_yaml):
+    """ Write dict to a yaml"""
+    try:
+      with open(out_yaml, 'w') as out:
+         yaml.dump(conf_dict, out, default_flow_style=False)
+    except:
+       raise
  
 def concat_fasta_files(fa_list, out):
     """
@@ -225,14 +234,47 @@ if __name__ == "__main__":
     glens , n_counts = get_fasta_lengths(fasta)
     glens_dict = dict ( zip ( sample_names, glens ))
 
+    if args.CONFIG_META:
+       meta_fields = parse_yaml(args.CONFIG_META)
+       config_dir = os.path.dirname(args.CONFIG_META)
+       conf_yaml = os.path.join(config_dir , "config.yaml")
+       build_yaml = os.path.join(config_dir , "builds.yaml")
+       if not os.path.exists(conf_yaml) or not os.path.exists(build_yaml):
+          log("Error : Nextstrain build files 1) config.yaml 2) builds.yaml missing in " +  config_dir)
+          exit()
+
     if args.NEXT_META:
        next_metadata = args.NEXT_META
+       local_meta = parse_tsv(args.NEXT_META,col=0)
        # TODO: Check if fields match config or report error 
+       mandatory_cols = [ 'strain' , 'date' , 'date_submitted']
+       check_cols = local_meta.columns
+       missed_man_cols = [ k for k in mandatory_cols if k not in check_cols ]
+       if len(missed_man_cols) > 0:
+          log("Error : Metadata file provided is missing one of the columns\n-" + "\n-".join(missed_man_cols))
+          log("INFO : Please provide correct metadata file or run excluding --next_meta parameter to auto generate metadata")
+          exit()
+       missed_cols = [ k for k in meta_fields if k not in check_cols ]
+       extra_cols = [ k for k in check_cols if k not in meta_fields ]
+       ### TODO : Add extra columns to global meta using pandas merge ; getting that to work
+       ### For now just dropping extra columns
+       local_meta.drop(extra_cols, inplace=True, axis=1)
+       for i in missed_cols:
+           if i not in mandatory_cols:
+              local_meta[i] = meta_fields[i]
     else:
        ### Create fake metadata
        next_metadata = os.path.join(outdir,"run_sequences_metadata.tsv")
-       if args.CONFIG_META:
-          meta_fields = parse_yaml(args.CONFIG_META)
+      
+        #if args.CONFIG_META:
+       #   meta_fields = parse_yaml(args.CONFIG_META)
+       #   config_dir = os.path.dirname(args.CONFIG_META)
+       #   conf_yaml = os.path.join(config_dir , "config.yaml")
+       #   build_yaml = os.path.join(config_dir , "builds.yaml")
+       #   if not os.path.exists(conf_yaml) or not os.path.exists(build_yaml):
+       #      log("Error : Nextstrain build files 1) config.yaml 2) builds.yaml missing in " +  config_dir)
+       #      exit()
+       
        # parse pangolin
        if args.P_CLADE:
           pangolin_dict = parse_csv_to_dict(args.P_CLADE,"taxon" , "lineage")
@@ -250,18 +292,43 @@ if __name__ == "__main__":
        log("INFO : Generating metadata for the samples " )
        local_meta = prepare_metadata(sample_names, meta_fields, glens_dict, pangolin_dict, next_dict, N_DAYS,DATE_FMT, next_metadata)
        log("INFO : Output local metadata : " + next_metadata )
-       if args.GLOBAL_META:
-          g_df = parse_tsv(args.GLOBAL_META,col=0)
-          #all_seq_meta_df = pd.concat([local_meta,g_df],axis=1)
-          all_seq_meta_df = pd.merge(local_meta,g_df, on='strain', how='outer',left_index=True, right_index=True,suffixes=('', '_DROP')).filter(regex='^(?!.*_DROP)')
-          all_seq_meta_df.replace(np.nan, "Unknown", inplace=True)
-          log("INFO:  Combining local and global metadata for nextstrain" )     
-          all_seq_meta = os.path.join(outdir,"all_sequences_metadata.tsv")
-          all_seq_meta_df.to_csv(all_seq_meta, mode='w', sep="\t",header=True,index = False)
-          log("INFO : Output final metadata : " + all_seq_meta )
-       if args.GLOBAL_SEQ:
-          all_seq_fasta = os.path.join(outdir,"all_sequences.fasta")
-          concat_fasta_files([ fasta , args.GLOBAL_SEQ ],all_seq_fasta)
-          log("INFO : Output final sequences : " + all_seq_fasta )
-             
-       log("INFO : Done !!!")
+    
+    if args.GLOBAL_META:
+       g_df = parse_tsv(args.GLOBAL_META,col=0)
+       g_df['strain'] = g_df['strain'].astype(str)
+       #all_seq_meta_df = pd.concat([local_meta,g_df],axis=1)
+       local_meta['strain'] = local_meta['strain'].astype(str)
+       all_seq_meta_df = pd.concat([local_meta,g_df,], ignore_index=True)
+       #all_seq_meta_df = pd.merge(local_meta, g_df, how='outer',on='strain',left_index=True, right_index=True,suffixes=('', '_DROP')).filter(regex='^(?!.*_DROP)')
+       all_seq_meta_df.replace(np.nan, "Unknown", inplace=True)
+       log("INFO:  Combining local and global metadata for nextstrain" )     
+       all_seq_meta = os.path.join(outdir,"all_sequences_metadata.tsv")
+       all_seq_meta_df.to_csv(all_seq_meta, mode='w', sep="\t",header=True,index = False)
+       log("INFO : Output final metadata : " + all_seq_meta )
+    
+    if args.GLOBAL_SEQ:
+       all_seq_fasta = os.path.join(outdir,"all_sequences.fasta")
+       concat_fasta_files([ fasta , args.GLOBAL_SEQ ],all_seq_fasta)
+       log("INFO : Output final sequences : " + all_seq_fasta )
+       
+       log("INFO : Writing nextstrain config files")
+       profile_dir = os.path.join(outdir , "custom_profile")
+       if not os.path.exists(profile_dir):
+          os.makedirs(profile_dir)
+       copyfile( build_yaml , os.path.join(profile_dir, "builds.yaml"))
+              
+    if conf_yaml:
+       conf_dict = parse_yaml(conf_yaml)
+       for key in conf_dict:
+           if key == "configfile":
+              conf_dict[key][1] = os.path.join(profile_dir, "builds.yaml")
+           if key == "config":
+              for i in range(len(conf_dict[key])):
+                     k,v = conf_dict[key][i].split("=")
+                     if k == "sequences":
+                        v = all_seq_fasta
+                     if k == "metadata":
+                        v = all_seq_meta
+                     conf_dict[key][i] = k + "=" + v
+    write_yaml(conf_dict, os.path.join(profile_dir, "config.yaml"))      
+    log("INFO : Done !!!")

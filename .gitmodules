@@ -7,3 +7,7 @@
 [submodule "config/nCoV-2019/V3/pangoLEARN"]
 	path = config/nCoV-2019/V3/pangoLEARN
 	url = https://github.com/cov-lineages/pangoLEARN.git
+[submodule "nextstrain_JHU"]
+	path = nextstrain_JHU
+	url = https://github.com/srividya22/nextstrain_JHU.git
+	branch = master
