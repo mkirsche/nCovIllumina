@@ -75,6 +75,10 @@ REF_GB=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/reference_seq.gb
 PANGOLIN_DATA=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/pangoLEARN/pangoLEARN/data
 NEXTSTRAIN_CLADES=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/clades.tsv
 SNPEFF_CONFIG=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/snpEff/snpEff.config
+META_CONF=$GENOMEDIR/$PATHOGENREF/$PRIMERVERSION/nextstrain/nextstrain_metadata_fields.yaml
+
+# Setting RUN_NAME to basename of the OUTPUTDIR
+RUN_NAME=$( basename ${OUTPUTDIR} )
 
 mkdir -p "$OUTPUTDIR" && cd "$OUTPUTDIR"
 source "$CONFIG"
@@ -194,6 +198,21 @@ echo "---------------------------------"
 
 echo "---------------------------------"
 echo "NEXTSTRAIN CLADE ASSIGNMENT SKIPPED"
+echo "---------------------------------"
+
+#------------------------------------------------------------------------------
+
+## Run nextstrain alpha 
+
+# next-strain specific conda environment loaded in nextstrain script
+#conda deactivate
+
+#if [! -d "$OUTPUTDIR/results/nextstrain/alpha" ]; then
+#  $BINDIR/src/run_nextstrain_alpha.sh $OUTPUTDIR $BINDIR $META_CONF $OUTPUTDIR/results/pangolin/pangolin_lineage_report.csv $OUTPUTDIR/results/nextstrain/nextstrain_clades.tsv $GLOBAL_SEQ $GLOBAL_META $RUN_NAME
+#fi
+
+echo "---------------------------------"
+echo "NEXTSTRAIN ALPHA SKIPPED"
 echo "---------------------------------"
 
 #------------------------------------------------------------------------------

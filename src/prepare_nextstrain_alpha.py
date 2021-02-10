@@ -68,7 +68,7 @@ def prepare_metadata(sname_list, meta_dict, len_dict, pangolin_dict, next_dict, 
         if col == "date":
            meta_df['date'] = [generate_date(n_days,date_fmt) for i in range(0,len(sname_list))]
         if col == "date_submitted":
-           meta_df['date'] = cur_date.strftime(date_fmt)
+           meta_df['date_submitted'] = cur_date.strftime(date_fmt)
     meta_df.to_csv(out_file, mode='w', sep="\t",header=True,index=False)
     return meta_df
 
@@ -208,6 +208,7 @@ if __name__ == "__main__":
     parser.add_argument("--nextstrain_clade",dest="NEXT_CLADE",type=str, required=False, help="Path to a tsv file nextstrain clades")
     parser.add_argument("--global-seq",dest="GLOBAL_SEQ",type=str, required=False, help="Path to a subsampled fasta file")
     parser.add_argument("--global-meta",dest="GLOBAL_META",type=str, required=False, help="Nextstrain metadata file for the subsampled fasta")
+    parser.add_argument("--run_name",dest="RUN_NAME",type=str, required=True, help="Run name for the nextstrain run")
     parser.add_argument("-out",dest="OUTPUT_DIR",type=str, required=True, help="Path to output directory for alpha nextstrain")
     
     args = parser.parse_args()
@@ -265,16 +266,6 @@ if __name__ == "__main__":
     else:
        ### Create fake metadata
        next_metadata = os.path.join(outdir,"run_sequences_metadata.tsv")
-      
-        #if args.CONFIG_META:
-       #   meta_fields = parse_yaml(args.CONFIG_META)
-       #   config_dir = os.path.dirname(args.CONFIG_META)
-       #   conf_yaml = os.path.join(config_dir , "config.yaml")
-       #   build_yaml = os.path.join(config_dir , "builds.yaml")
-       #   if not os.path.exists(conf_yaml) or not os.path.exists(build_yaml):
-       #      log("Error : Nextstrain build files 1) config.yaml 2) builds.yaml missing in " +  config_dir)
-       #      exit()
-       
        # parse pangolin
        if args.P_CLADE:
           pangolin_dict = parse_csv_to_dict(args.P_CLADE,"taxon" , "lineage")
@@ -316,7 +307,10 @@ if __name__ == "__main__":
        if not os.path.exists(profile_dir):
           os.makedirs(profile_dir)
        copyfile( build_yaml , os.path.join(profile_dir, "builds.yaml"))
-              
+
+    if args.RUN_NAME:
+       run_name = args.RUN_NAME
+         
     if conf_yaml:
        conf_dict = parse_yaml(conf_yaml)
        for key in conf_dict:
@@ -329,6 +323,10 @@ if __name__ == "__main__":
                         v = all_seq_fasta
                      if k == "metadata":
                         v = all_seq_meta
+                     if k == "outdir":
+                        v = outdir + "/alpha"
+                     if k == "run_name":
+                        v = run_name
                      conf_dict[key][i] = k + "=" + v
     write_yaml(conf_dict, os.path.join(profile_dir, "config.yaml"))      
     log("INFO : Done !!!")

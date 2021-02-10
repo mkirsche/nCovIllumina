@@ -34,3 +34,9 @@ IVAR_MIN_FREQ_THRESHOLD=.15
 # set NTC name needed for negative control filtering
 # set to "" if no NTC included on sequencing run
 NTCPREFIX=plate1_A12_S59_L001
+
+## Nextstrain alpha configuration
+# set path to global subsampling fasta
+# set path to global subsampling metadata
+GLOBAL_SEQ=/home/idies/workspace/covid19/nextstrain/subsampling/subsampling_01-14-2021.fasta
+GLOBAL_META=/home/idies/workspace/covid19/nextstrain/subsampling/subsampling_01-14-2021_metadata.tsv

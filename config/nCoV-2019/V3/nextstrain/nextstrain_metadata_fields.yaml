@@ -7,9 +7,9 @@ region: North America
 country: USA
 division: Maryland
 location: 
-region_exposure: Unknown
-country_exposure: Unknown
-division_exposure: Unknown
+region_exposure: North America
+country_exposure: USA
+division_exposure: Maryland
 segment: genome
 length: 
 host: Human
