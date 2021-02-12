@@ -31,11 +31,15 @@ fi
 
 ${SCRIPT_DIR}/prepare_nextstrain_alpha.py -g ${CONS_FASTA} --metadata-config ${META_CONF} --pangolin_clade ${PANGOLIN_TSV} --nextstrain_clade ${NEXTSTRAIN_TSV} -out ${OUTDIR} --global-meta ${GLOBAL_META} --global-seq ${GLOBAL_SEQ} --run_name ${RUN_NAME}
 
-conda deactivate
-conda activate nextstrain
+if [ $? -eq 0 ]; then 
+   conda deactivate
+   conda activate nextstrain
 
-# Run Snakemake pipeline
-cd ${SCRIPT_DIR}/../nextstrain_JHU
-snakemake --cores 4 --profile ${OUTDIR}/custom_profile -s Snakefile_local
-cd -
-echo "NEXTSTRAIN ALPHA COMPLETED DONE"
+   # Run Snakemake pipeline
+   cd ${SCRIPT_DIR}/../nextstrain_JHU
+   snakemake --cores 4 --profile ${OUTDIR}/custom_profile -s Snakefile_local
+   cd -
+   echo "NEXTSTRAIN ALPHA COMPLETED DONE"
+else 
+   echo "Error processing sequence/metadata files"
+fi

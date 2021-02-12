@@ -7,7 +7,7 @@ Script to prepare nextstrain alpha files
 
 import pandas as pd
 import numpy as np 
-import json , os
+import json , os ,sys
 import argparse
 import random , time
 from datetime import datetime , date , timedelta
@@ -242,19 +242,18 @@ if __name__ == "__main__":
        build_yaml = os.path.join(config_dir , "builds.yaml")
        if not os.path.exists(conf_yaml) or not os.path.exists(build_yaml):
           log("Error : Nextstrain build files 1) config.yaml 2) builds.yaml missing in " +  config_dir)
-          exit()
+          sys.exit(1)
 
     if args.NEXT_META:
        next_metadata = args.NEXT_META
        local_meta = parse_tsv(args.NEXT_META,col=0)
-       # TODO: Check if fields match config or report error 
        mandatory_cols = [ 'strain' , 'date' , 'date_submitted']
        check_cols = local_meta.columns
        missed_man_cols = [ k for k in mandatory_cols if k not in check_cols ]
        if len(missed_man_cols) > 0:
           log("Error : Metadata file provided is missing one of the columns\n-" + "\n-".join(missed_man_cols))
           log("INFO : Please provide correct metadata file or run excluding --next_meta parameter to auto generate metadata")
-          exit()
+          sys.exit(1)
        missed_cols = [ k for k in meta_fields if k not in check_cols ]
        extra_cols = [ k for k in check_cols if k not in meta_fields ]
        ### TODO : Add extra columns to global meta using pandas merge ; getting that to work
@@ -263,6 +262,45 @@ if __name__ == "__main__":
        for i in missed_cols:
            if i not in mandatory_cols:
               local_meta[i] = meta_fields[i]
+       # Check if metadata field "strain" is unique
+       uniqueSamples = local_meta['strain'].unique()
+       if len(uniqueSamples) != local_meta.shape[0]:
+          log("Error : Metadata file has non unique values for strain column ")
+          sys.exit(1)
+
+       if local_meta['strain'].isnull().values.any() or (local_meta['strain'] == '').sum() > 0 :
+          log("Error : Metadata file should contain a non empty string ")
+          sys.exit(1)
+       
+       try:
+          log("INFO: Checking date column for metadata")
+          pd.to_datetime(local_meta['date'], format="%Y-%m-%d", errors='raise')
+          # do something
+       except ValueError:
+          log("Error : Invalid date specified for date column ; should be in the format YYYY-MM-DD ")    
+          sys.exit(1) 
+       try:
+          log("INFO: Checking date_submitted for metadata")
+          pd.to_datetime(local_meta['date_submitted'], format="%Y-%m-%d", errors='raise')
+          # do something
+       except ValueError:
+          log("Error : Invalid date specified for date_submitted column ; should be in the format YYYY-MM-DD ")       
+          sys.exit(1)
+       # parse pangolin
+       if args.P_CLADE:
+          pangolin_dict = parse_csv_to_dict(args.P_CLADE,"taxon" , "lineage")
+       else:
+          log("WARNING : Pangolin  clade output file not provided; Set to ? for all samples " )
+          pangolin_dict = dict(zip(sample_names,["?" for i in sample_names ])) 
+       # parse nextstrain
+       if args.NEXT_CLADE:
+          next_dict = parse_tsv_to_dict(args.NEXT_CLADE,"name","clade") 
+       else:
+          log("WARNING : Nextstrain clade output file not provided; Set to ? for all samples " )
+          next_dict = dict(zip(sample_names,["?" for i in sample_names ])) 
+
+       local_meta['pangolin_lineage'] = local_meta['strain'].map(pangolin_dict)
+       local_meta['Nextstrain_clade'] = local_meta['strain'].map(next_dict)
     else:
        ### Create fake metadata
        next_metadata = os.path.join(outdir,"run_sequences_metadata.tsv")
