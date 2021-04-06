@@ -356,6 +356,7 @@ def main():
         elif data['in_consensus']=='IUPAC' and data['unambig']==True:
             assert data['consensus_base'] in IUPAC
         elif data['in_consensus']==False and data['unambig']==True:
+            print(pos,data['consensus_base'],data['ref'])
             assert data['consensus_base']==data['ref']
         elif data['unambig']==False:
             assert data['consensus_base']=='N'
