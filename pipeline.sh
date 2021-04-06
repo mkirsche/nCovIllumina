@@ -148,7 +148,7 @@ echo "---------------------------------"
 $BINDIR/src/run_postfilter.sh $OUTPUTDIR $BINDIR $NTCPREFIX $REFERENCE $GLOBALDIVERSITY $KEYPOS $CASEDEFS $AMPLICONS $HOMOPOLYMERS
 
 # run postfilter summary
-#python $BINDIR/src/summarize_postfilter.py --rundir $OUTPUTDIR/results/postfilt
+python $BINDIR/src/summarize_postfilter.py --rundir $OUTPUTDIR/results/postfilt
 
 echo "---------------------------------"
 echo "POST-FILTERING COMPLETE"
